@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>cisball</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" />
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
+        <script src="https://unpkg.com/notie"></script>
+    </head>
+    <body>
+        <section class="section">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-half">                        
+                        <p class="title is-1" id="seasonContainer"></p>
+                        <table id="resultTable" class="table is-striped is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Pos.</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Spiele</th>
+                                    <th scope="col">Torverhältnis</th>
+                                    <th scope="col">Punkte</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultTableBody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column box is-half">
+                        <h1 class="title px-auto">neues Spiel</h1>
+                        <div class="columns is-centered">
+                            <div class="column is-one-quarter">
+                                <div class="select">
+                                    <select id="user1" data-source="users">                          
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="column is-one-quarter">
+                                <div class="select">
+                                    <select id="user2" data-source="users">                          
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control columns is-centered">
+                            <input class="input column is-one-quarter" type="number" id="user1Score">&nbsp;:&nbsp;<input class="input column is-one-quarter" type="number" id="user2Score">
+                        </div>     
+                        <div class="">
+                            <button class="button is-primary" onClick="addMatch()">speichern</button>
+                        </div>                     
+                    </div>
+                </div>
+            </div>
+
+            <button class="button is-primary" title="Spieler hinzufügen" onclick="document.querySelector('#newUserModal').classList.add('is-active');">
+                <i class="fas fa-user-plus"></i>
+            </button>
+            <div class="modal" id="newUserModal">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                  <header class="modal-card-head">
+                    <p class="modal-card-title">Spieler anlegen</p>
+                    <button class="delete" aria-label="close" onClick="document.querySelector('#newUserModal').classList.remove('is-active');"></button>
+                  </header>
+                  <section class="modal-card-body">
+                        <label for="newUser">Username</label><input class="input column is-one-quarter" type="text" id="newUser">                            
+                </section>
+                <footer class="modal-card-foot">
+                  <button class="button is-primary" onClick="addUser();">speichern</button>
+                </footer>
+              </div>
+            </div>
+        </section>
+        </div>
+        <script>
+            loadTable();
+            loadUsers();            
+            
+            function loadUsers(){
+                document.querySelector('#user1').options.length = 0;
+                document.querySelector('#user2').options.length = 0;
+
+                fetch('/scoreboard/user')
+                .then(response => response.json())
+                .then(users => {
+                    let user1Select = document.querySelector('#user1');
+                    let user2Select = document.querySelector('#user2');
+                    users.forEach(currUser => {
+                        user1Select.add(new Option(currUser.name));
+                        user2Select.add(new Option(currUser.name));
+                    });
+                    
+                });
+            }
+            
+            function loadTable(){
+                let tableBody = document.querySelector('#resultTableBody');
+                tableBody.innerHTML = '';
+                let lineCounter = 1;
+                fetch('/scoreboard/season/current/table')
+                .then(response => response.json())
+                .then(table => {
+                    table.forEach(tablePosition => {
+                        var row = tableBody.insertRow();
+                        let sign = "";
+                        
+                        if(lineCounter == 1) { 
+                            sign = '<i class="fas fa-crown has-text-warning"></i>'; 
+                        }
+
+                        row.insertCell(0).innerHTML = lineCounter++;
+                        row.insertCell(1).innerHTML = tablePosition.name + " " + sign;                
+                        row.insertCell(2).innerHTML = tablePosition.gameCount;
+                        row.insertCell(3).innerHTML = tablePosition.goalsScored + ":" + tablePosition.goalsReceived;
+                        row.insertCell(4).innerHTML = tablePosition.points; 
+                    });                   
+                });
+
+                fetch('/scoreboard/season/current')
+                .then(response => response.json())
+                .then(season => {
+                    document.querySelector("#seasonContainer").innerHTML = '<i class="fas fa-futbol"></i><i class="fas fa-trophy"></i> ' + season.value.name;
+                });
+            }
+
+            function addMatch(){
+                let user1 = document.querySelector("#user1").value;
+                let user2 = document.querySelector("#user2").value;
+                let user1Score = document.querySelector("#user1Score").value;
+                let user2Score = document.querySelector("#user2Score").value;
+
+                if(user1 == user2){
+                    notie.alert({
+                        type: 'error',
+                        text: 'Spiele gegen sich selbst werden nicht gewertet!'
+                    });
+                    return;
+                }
+
+                const options = {
+                    method: 'POST'                    
+                }
+
+                fetch('/scoreboard/season/current/game?user1=' + user1 + '&user2=' + user2 + '&score1=' + user1Score + '&score2=' + user2Score, options)
+                .then(response => {
+                    if(response.status == 200){
+                        document.querySelector("#user1").value = '';
+                        document.querySelector("#user2").value = '';
+                        document.querySelector("#user1Score").value = '';
+                        document.querySelector("#user2Score").value = '';
+                        loadTable();
+                        notie.alert({
+                            type: 'success',
+                            text: 'Spiel gespeichert!'
+                        });
+                    } else {
+                        notie.alert({
+                            type: 'error',
+                            text: 'Spiel konnte nicht gespeichert werden!'
+                        });
+                    }
+                })
+            }
+
+            function addUser(){
+                let user = document.querySelector("#newUser").value;
+
+                if(user == ""){
+                    notie.alert({
+                        type: 'error',
+                        text: 'Spielername ist leer!'
+                    });
+                    return;
+                }
+
+                if(user.contains(" ")){
+                    notie.alert({
+                        type: 'error',
+                        text: 'Spielername darf keine Leerzeichen enthalten (SORRY)!'
+                    });
+                    return;
+                }
+
+                const options = {
+                    method: 'POST'                    
+                }
+
+                fetch('/scoreboard/user/' + user, options)
+                .then(response => {
+                    if(response.status == 200){
+                        document.querySelector("#user1").value = '';
+                        document.querySelector("#user2").value = '';
+                        document.querySelector("#user1Score").value = '';
+                        document.querySelector("#user2Score").value = '';
+                        loadTable();
+                        loadUsers();
+                        document.querySelector('#newUserModal').classList.remove('is-active');
+                        notie.alert({
+                            type: 'success',
+                            text: 'Spieler angelegt!'
+                        });
+                    } else {
+                        notie.alert({
+                            type: 'error',
+                            text: 'Spieler konnte nicht angelegt werden!'
+                        });
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>
