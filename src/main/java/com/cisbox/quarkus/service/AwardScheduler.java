@@ -1,5 +1,8 @@
 package com.cisbox.quarkus.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +16,8 @@ import javax.inject.Inject;
 import com.cisbox.quarkus.dao.EntityPersister;
 import com.cisbox.quarkus.entity.User;
 
+import io.quarkus.mailer.Mail;
+import io.quarkus.mailer.Mailer;
 import io.quarkus.scheduler.Scheduled;
 
 @ApplicationScoped 
@@ -20,6 +25,9 @@ public class AwardScheduler {
 
     @Inject 
     private ScoreboardService scoreboardService;
+
+    @Inject
+    Mailer mailer;  
 
     @Scheduled(cron="0 0 1 * * ?")     
     void awardChampions() {
@@ -41,5 +49,19 @@ public class AwardScheduler {
         }
 
         EntityPersister.writeUsers(userMap.values());
+    }
+
+    @Scheduled(cron="0 */10 * * * ?")
+    public void sendFilesAsBackup(){
+        try{
+        mailer.send(
+            Mail.withText("marcel.birkenkamp@cisbox.com", "scoreboard backup", "nobody")
+                .addAttachment("user.csv",Files.readAllBytes(Path.of(EntityPersister.USERFILE)), "text/plain")
+                .addAttachment("game.csv",Files.readAllBytes(Path.of(EntityPersister.GAMEFILE)), "text/plain")
+                .addAttachment("season.csv",Files.readAllBytes(Path.of(EntityPersister.SEASONFILE)), "text/plain")
+        );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

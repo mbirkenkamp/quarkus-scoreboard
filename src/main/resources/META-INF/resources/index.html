@@ -8,50 +8,69 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" />
         <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
         <script src="https://unpkg.com/notie"></script>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+        <style>
+            .notie-fullscreen {
+                display:table-cell; 
+                height: 90vh; 
+                vertical-align: middle; 
+                text-align: center;
+            }            
+            .notie-container {
+                z-index: 41;
+            }
+            .notification {
+                background-color: unset;
+            }
+        </style>
     </head>
     <body>
         <section class="section">
             <div class="container">
-                <div class="columns">
-                    <div class="column is-half">                        
-                        <p class="title is-1" id="seasonContainer"></p>
-                        <table id="resultTable" class="table is-striped is-hoverable">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Pos.</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Spiele</th>
-                                    <th scope="col">Torverhältnis</th>
-                                    <th scope="col">Punkte</th>
-                                </tr>
-                            </thead>
-                            <tbody id="resultTableBody">
-                                
-                            </tbody>
-                        </table>
+                <div class="tile is-parent">
+                    <div class="tile is-child">
+                        <article class="tile is-child notification">                     
+                            <p class="title is-1" id="seasonContainer"></p>
+                            <table id="resultTable" class="table is-striped is-hoverable" aria-describedat="Tabelle der Saison">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Pos.</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Spiele</th>
+                                        <th scope="col">Torverhältnis</th>
+                                        <th scope="col">Punkte</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultTableBody">
+                                    
+                                </tbody>
+                            </table>
+                        </article>  
                     </div>
-                    <div class="column box is-half">
-                        <h1 class="title px-auto">neues Spiel</h1>
-                        <div class="columns is-centered">
-                            <div class="column is-one-quarter">
-                                <div class="select">
-                                    <select id="user1" data-source="users">                          
-                                    </select>
+                    <div class="tile is-child is-vertical">
+                        <article class="tile is-child notification">
+                            <h1 class="title px-auto">neues Spiel</h1>
+                            <div class="columns is-centered">
+                                <div class="column is-half">
+                                    <div class="select is-pulled-right">
+                                        <select id="user1" data-source="users">                          
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="column is-half">
+                                    <div class="select">
+                                        <select id="user2" data-source="users">                          
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="column is-one-quarter">
-                                <div class="select">
-                                    <select id="user2" data-source="users">                          
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="control columns is-centered">
-                            <input class="input column is-one-quarter" type="number" id="user1Score">&nbsp;:&nbsp;<input class="input column is-one-quarter" type="number" id="user2Score">
-                        </div>     
-                        <div class="">
-                            <button class="button is-primary" onClick="addMatch()">speichern</button>
-                        </div>                     
+                            <div class="control columns is-centered">
+                                <div class="column is-one-quarter"></div>
+                                <input class="input column is-one-quarter" type="number" id="user1Score">&nbsp;:&nbsp;<input class="input column is-one-quarter" type="number" id="user2Score">
+                                <div class="column is-one-quarter py-0"><button class="button is-primary is-pulled-right" onClick="addMatch()"><i class="fas fa-save"></i></button></div>
+                                
+                            </div>                               
+                        </article>
                     </div>
                 </div>
             </div>
@@ -97,10 +116,12 @@
                 });
             }
             
+            var currChampion;
             function loadTable(){
                 let tableBody = document.querySelector('#resultTableBody');
                 tableBody.innerHTML = '';
                 let lineCounter = 1;
+                var currentChampion;
                 fetch('/scoreboard/season/current/table')
                 .then(response => response.json())
                 .then(table => {
@@ -109,6 +130,10 @@
                         let sign = "";
                         
                         if(lineCounter == 1) { 
+                            if(currChampion !== undefined && tablePosition.name != currChampion){
+                                celebrateNewChampion(tablePosition.name);                                
+                            }
+                            currChampion = tablePosition.name;
                             sign = '<i class="fas fa-crown has-text-warning"></i>'; 
                         }
 
@@ -127,6 +152,40 @@
                 });
             }
 
+            var animationEnd = Date.now();
+            function celebrateNewChampion(newChampion){
+                notie.force({
+                    type: 'error',
+                    text: '<span class="notie-fullscreen fa-4x">new champion:<br/>' + newChampion + ' <i class="fas fa-crown has-text-warning"></i></span>',
+                    buttonText: 'OK'
+                }, function(){animationEnd = Date.now()});
+
+                var duration = 60 * 1000;
+                var animationEnd = Date.now() + duration;
+
+                setInterval(
+                    function(){   
+                        var timeLeft = animationEnd - Date.now();
+
+                        if (timeLeft <= 0) {
+                            return;      
+                        }           
+                        confetti({
+                            angle: randomInRange(55, 125),
+                            spread: randomInRange(50, 70),
+                            particleCount: randomInRange(50, 100),
+                            origin: { x: randomInRange(0.1, 0.9), y: randomInRange(0.1, 0.9) }
+                        })
+                    }
+                , 700);                
+            }
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+
+
             function addMatch(){
                 let user1 = document.querySelector("#user1").value;
                 let user2 = document.querySelector("#user2").value;
@@ -137,6 +196,22 @@
                     notie.alert({
                         type: 'error',
                         text: 'Spiele gegen sich selbst werden nicht gewertet!'
+                    });
+                    return;
+                }
+
+                if(user1Score === ""){
+                    notie.alert({
+                        type: 'error',
+                        text: 'Anzahl Tore Spieler 1 fehlt!'
+                    });
+                    return;
+                }
+
+                if(user2Score === ""){
+                    notie.alert({
+                        type: 'error',
+                        text: 'Anzahl Tore Spieler 2 fehlt!'
                     });
                     return;
                 }
@@ -177,7 +252,7 @@
                     return;
                 }
 
-                if(user.contains(" ")){
+                if(user.includes(" ")){
                     notie.alert({
                         type: 'error',
                         text: 'Spielername darf keine Leerzeichen enthalten (SORRY)!'
@@ -202,6 +277,11 @@
                         notie.alert({
                             type: 'success',
                             text: 'Spieler angelegt!'
+                        });
+                    } else if(response.status == 409){
+                        notie.alert({
+                            type: 'error',
+                            text: 'Spieler existiert schon!'
                         });
                     } else {
                         notie.alert({
