@@ -44,6 +44,9 @@ pipeline {
             when { not { expression { return params.BUILD_NATIVE_CONTAINER } } }
 
             steps {
+            	sh "pwd"
+                sh "ls -al ."
+                sh "chmod 777 ./mvnw"
                 dir("$workingDir") {
                     sh "./mvnw clean package" +
                         " -Dquarkus.jib.environment-variables.version=$BUILD_TAG" +
