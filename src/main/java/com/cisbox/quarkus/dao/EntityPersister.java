@@ -29,9 +29,9 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 @RegisterForReflection
 @Named("EntityPersister")
 public class EntityPersister {
-    public static final String USERFILE = "../data/user.csv";
-    public static final String SEASONFILE = "../data/season.csv";
-    public static final String GAMEFILE = "../data/game.csv";
+    public static final String USERFILE = "/data/user.csv";
+    public static final String SEASONFILE = "/data/season.csv";
+    public static final String GAMEFILE = "/data/game.csv";
 
     private EntityPersister(){}
 
