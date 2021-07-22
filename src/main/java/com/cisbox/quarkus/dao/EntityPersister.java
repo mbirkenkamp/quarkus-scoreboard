@@ -1,5 +1,6 @@
 package com.cisbox.quarkus.dao;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,24 +22,32 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+
 import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import lombok.Getter;
 
 @ApplicationScoped
 @RegisterForReflection
 @Named("EntityPersister")
-public class EntityPersister {
-    public static final String USERFILE = "/data/user.csv";
-    public static final String SEASONFILE = "/data/season.csv";
-    public static final String GAMEFILE = "/data/game.csv";
+public class EntityPersister {   
+    @Getter private String userFilePath = null;
+    @Getter private String seasonFilePath = null;
+    @Getter private String gameFilePath = null;
 
-    private EntityPersister(){}
+    private EntityPersister(){
+        System.out.println(new File(".").getAbsolutePath());
+        userFilePath = ConfigProvider.getConfig().getValue("scoreboard.data.directory", String.class) + "/user.csv";
+        seasonFilePath = ConfigProvider.getConfig().getValue("scoreboard.data.directory", String.class) + "/season.csv";
+        gameFilePath = ConfigProvider.getConfig().getValue("scoreboard.data.directory", String.class) + "/game.csv";
+    }
 
     @CacheResult(cacheName = "user-cache")
-    public static List<User> readUsers(){
+    public List<User> readUsers(){
         try {
-        return new CsvToBeanBuilder<User>(new FileReader(USERFILE)).withType(User.class).build().parse();
+            return new CsvToBeanBuilder<User>(new FileReader(userFilePath)).withType(User.class).build().parse();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -46,9 +55,9 @@ public class EntityPersister {
     }
 
     @CacheInvalidateAll(cacheName = "user-cache")
-    public static int writeUsers(Collection<User> userList){
+    public int writeUsers(Collection<User> userList){
         try {
-            Writer writer = new FileWriter(USERFILE);
+            Writer writer = new FileWriter(userFilePath);
             StatefulBeanToCsv<User> beanToCsv = new StatefulBeanToCsvBuilder<User>(writer).build();
             beanToCsv.write(userList.iterator());        
             writer.close();
@@ -59,9 +68,9 @@ public class EntityPersister {
     }
 
     @CacheResult(cacheName = "season-cache")
-    public static List<Season> readSeasons(){
+    public List<Season> readSeasons(){
         try {
-            return new CsvToBeanBuilder<Season>(new FileReader(SEASONFILE)).withType(Season.class).build().parse();
+                return new CsvToBeanBuilder<Season>(new FileReader(seasonFilePath)).withType(Season.class).build().parse();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -69,10 +78,10 @@ public class EntityPersister {
     }
 
     @CacheInvalidateAll(cacheName = "season-cache")
-    public static int writeSeasons(List<Season> seasonList){
+    public int writeSeasons(List<Season> seasonList){
         try {
             
-            Writer writer = new FileWriter(SEASONFILE);
+            Writer writer = new FileWriter(seasonFilePath);
             StatefulBeanToCsv<Season> beanToCsv = new StatefulBeanToCsvBuilder<Season>(writer).build();
             beanToCsv.write(seasonList);        
             writer.close();
@@ -83,9 +92,9 @@ public class EntityPersister {
     }
 
     @CacheResult(cacheName = "game-cache")
-    public static List<Game> readGames(){
+    public List<Game> readGames(){
         try {
-        return new CsvToBeanBuilder<Game>(new FileReader(GAMEFILE)).withType(Game.class).build().parse();
+            return new CsvToBeanBuilder<Game>(new FileReader(gameFilePath)).withType(Game.class).build().parse();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -93,9 +102,9 @@ public class EntityPersister {
     }
 
     @CacheInvalidateAll(cacheName = "game-cache")
-    public static int writeGames(List<Game> gameList){
+    public int writeGames(List<Game> gameList){
         try {
-            Writer writer = new FileWriter(GAMEFILE);
+            Writer writer = new FileWriter(gameFilePath);
             StatefulBeanToCsv<Game> beanToCsv = new StatefulBeanToCsvBuilder<Game>(writer).build();
             beanToCsv.write(gameList);        
             writer.close();

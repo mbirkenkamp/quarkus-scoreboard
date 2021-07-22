@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.cisbox.quarkus.dao.EntityPersister;
@@ -22,12 +23,14 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 @RegisterForReflection
 @Named("ScoreboardService")
 public class ScoreboardService {
+    @Inject 
+    private EntityPersister entityPersister;
 
     public List<TableEntry> getSeasonTable(String season){
-        List<Game> gameList = EntityPersister.readGames();
+        List<Game> gameList = entityPersister.readGames();
         Map<String, TableEntry> sortedMap = new HashMap<>();
         
-        EntityPersister.readUsers().stream().forEach(currUser -> sortedMap.put(currUser.getName(), new TableEntry(currUser.getName())));
+        entityPersister.readUsers().stream().forEach(currUser -> sortedMap.put(currUser.getName(), new TableEntry(currUser.getName())));
 
         for(Game currGame : gameList) {
             if(currGame.getSeasonName().equals(season)){
@@ -43,7 +46,7 @@ public class ScoreboardService {
 
     public String handleSeason(String season) {
         if(season.equals("current")){
-            Optional<Season> output = EntityPersister.readSeasons().stream()
+            Optional<Season> output = entityPersister.readSeasons().stream()
             .filter(currSeason -> LocalDate.now().isAfter(currSeason.getStartDate()) 
                 	&& LocalDate.now().isBefore(currSeason.getEndDate()))
             .findAny();
@@ -54,7 +57,7 @@ public class ScoreboardService {
     }
 
     public Optional<Season> getSeason(String seasonName) {
-        return EntityPersister.readSeasons().stream()
+        return entityPersister.readSeasons().stream()
             .filter(currSeason -> currSeason.getName().equals(seasonName))
             .findFirst();
     }

@@ -26,15 +26,18 @@ public class AwardScheduler {
     @Inject 
     private ScoreboardService scoreboardService;
 
+    @Inject 
+    private EntityPersister entityPersister;
+
     @Inject
     Mailer mailer;  
 
     @Scheduled(cron="0 0 1 * * ?")     
     void awardChampions() {
-        Map<String, User> userMap = EntityPersister.readUsers().stream().collect(Collectors.toMap(User::getName, Function.identity()));
+        Map<String, User> userMap = entityPersister.readUsers().stream().collect(Collectors.toMap(User::getName, Function.identity()));
         Map<String, Integer> awardMap = new HashMap<>();
 
-        EntityPersister.readSeasons().stream()
+        entityPersister.readSeasons().stream()
             .filter(currSeason -> LocalDate.now().isAfter(currSeason.getEndDate()))
             .forEach(currSeason -> {
                 String seasonWinnerName = scoreboardService.getSeasonTable(currSeason.getName()).get(0).getName();
@@ -48,7 +51,7 @@ public class AwardScheduler {
             userMap.get(currAwardMapEntry.getKey()).setAwards(currAwardMapEntry.getValue());
         }
 
-        EntityPersister.writeUsers(userMap.values());
+        entityPersister.writeUsers(userMap.values());
     }
 
     @Scheduled(cron="0 */10 * * * ?")
@@ -56,9 +59,9 @@ public class AwardScheduler {
         try{
         mailer.send(
             Mail.withText("marcel.birkenkamp@cisbox.com", "scoreboard backup", "nobody")
-                .addAttachment("user.csv",Files.readAllBytes(Path.of(EntityPersister.USERFILE)), "text/plain")
-                .addAttachment("game.csv",Files.readAllBytes(Path.of(EntityPersister.GAMEFILE)), "text/plain")
-                .addAttachment("season.csv",Files.readAllBytes(Path.of(EntityPersister.SEASONFILE)), "text/plain")
+                .addAttachment("user.csv",Files.readAllBytes(Path.of(entityPersister.getUserFilePath())), "text/plain")
+                .addAttachment("game.csv",Files.readAllBytes(Path.of(entityPersister.getGameFilePath())), "text/plain")
+                .addAttachment("season.csv",Files.readAllBytes(Path.of(entityPersister.getSeasonFilePath())), "text/plain")
         );
         } catch (IOException e) {
             e.printStackTrace();
