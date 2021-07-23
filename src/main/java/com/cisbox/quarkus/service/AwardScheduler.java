@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import com.cisbox.quarkus.dao.CsvEntityPersister;
 import com.cisbox.quarkus.entity.User;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.scheduler.Scheduled;
@@ -54,15 +56,16 @@ public class AwardScheduler {
         entityPersister.writeUsers(userMap.values());
     }
 
-    @Scheduled(cron="0 */10 * * * ?")
+    @Scheduled(cron="0 0 2 * * ?")
     public void sendFilesAsBackup(){
+        String email = ConfigProvider.getConfig().getValue("scoreboard.data.backup.email", String.class);
         try{
-        mailer.send(
-            Mail.withText("marcel.birkenkamp@cisbox.com", "scoreboard backup", "nobody")
-                .addAttachment("user.csv",Files.readAllBytes(Path.of(entityPersister.getUserFilePath())), "text/plain")
-                .addAttachment("game.csv",Files.readAllBytes(Path.of(entityPersister.getGameFilePath())), "text/plain")
-                .addAttachment("season.csv",Files.readAllBytes(Path.of(entityPersister.getSeasonFilePath())), "text/plain")
-        );
+            mailer.send(
+                Mail.withText(email, "scoreboard backup", "nobody")
+                    .addAttachment("user.csv",Files.readAllBytes(Path.of(entityPersister.getUserFilePath())), "text/plain")
+                    .addAttachment("game.csv",Files.readAllBytes(Path.of(entityPersister.getGameFilePath())), "text/plain")
+                    .addAttachment("season.csv",Files.readAllBytes(Path.of(entityPersister.getSeasonFilePath())), "text/plain")
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }
