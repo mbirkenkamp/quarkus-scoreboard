@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.cisbox.quarkus.dao.EntityPersister;
+import com.cisbox.quarkus.dao.CsvEntityPersister;
 import com.cisbox.quarkus.entity.User;
 
 import io.quarkus.mailer.Mail;
@@ -27,7 +27,7 @@ public class AwardScheduler {
     private ScoreboardService scoreboardService;
 
     @Inject 
-    private EntityPersister entityPersister;
+    private CsvEntityPersister entityPersister;
 
     @Inject
     Mailer mailer;  

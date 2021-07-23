@@ -12,7 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.cisbox.quarkus.dao.EntityPersister;
+import com.cisbox.quarkus.dao.CsvEntityPersister;
 import com.cisbox.quarkus.dto.TableEntry;
 import com.cisbox.quarkus.entity.Game;
 import com.cisbox.quarkus.entity.Season;
@@ -24,7 +24,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 @Named("ScoreboardService")
 public class ScoreboardService {
     @Inject 
-    private EntityPersister entityPersister;
+    private CsvEntityPersister entityPersister;
 
     public List<TableEntry> getSeasonTable(String season){
         List<Game> gameList = entityPersister.readGames();

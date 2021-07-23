@@ -1,7 +1,6 @@
 package com.cisbox.quarkus.rest;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.cisbox.quarkus.dao.EntityPersister;
+import com.cisbox.quarkus.dao.CsvEntityPersister;
 import com.cisbox.quarkus.entity.Game;
 import com.cisbox.quarkus.entity.Season;
 import com.cisbox.quarkus.entity.User;
@@ -31,7 +30,7 @@ public class ScoreboardRest {
     private ScoreboardService scoreboardService;
 
     @Inject 
-    private EntityPersister entityPersister;
+    private CsvEntityPersister entityPersister;
 
     Gson gson = new Gson();
 
