@@ -1,6 +1,7 @@
 package com.cisbox.quarkus.rest;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -145,7 +146,13 @@ public class ScoreboardRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/user")
     public Response getUserlist() {
-        return Response.ok(gson.toJson(entityPersister.readUsers())).build();
+        return Response.ok(
+            gson.toJson(
+                entityPersister.readUsers().stream()
+                .sorted((user1, user2) -> user1.getName().compareTo(user2.getName()))
+                .collect(Collectors.toList())
+            )
+        ).build();
     }
 
     /**
