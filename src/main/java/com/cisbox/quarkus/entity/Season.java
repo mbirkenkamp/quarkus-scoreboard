@@ -21,5 +21,8 @@ public class Season {
 
     @CsvBindByName
     @CsvDate(value = "yyyy-MM-dd")
-    private LocalDate endDate;    
+    private LocalDate endDate; 
+    
+    @CsvBindByName
+    private String icon; 
 }

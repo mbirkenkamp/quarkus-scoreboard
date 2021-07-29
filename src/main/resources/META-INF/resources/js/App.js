@@ -1,7 +1,10 @@
+"use strict";
+
 var app = new Vue({
     el: '#app',
     data: {
         seasons: [],
+        currentSeasonName: null,
         currentSeason: null,
         users: [],
         tableEntries: [],
@@ -12,11 +15,16 @@ var app = new Vue({
         user1Score: 10,
         user2Score: 10,      
         
-        newUsername: ""
+        newUsername: "",
+
+        newSeasonName: null,
+        newSeasonIcon: null,
+        newSeasonStart: null,
+        newSeasonEnd: null
     },
     created: function () {
         this.loadSeasons();
-        this.loadCurrentSeasons();
+        this.loadCurrentSeason();
         this.loadUsers();
     },
     methods: {          
@@ -27,14 +35,31 @@ var app = new Vue({
                 this.seasons = seasons;
             });                
         },
-        loadCurrentSeasons: function(){            
+        loadCurrentSeason: function(){            
             fetch('/scoreboard/season/current')
             .then(response => response.json())
             .then(season => {
-                this.currentSeason = season.value.name;
+                this.currentSeason = season.value;
+                this.currentSeasonName = season.value.name;
+                this.loadSeasonIcon();
                 this.loadTable();
             });                
-        },   
+        },
+        loadSeasonIcon: function(){
+            let seasonIconElem = document.querySelector("#currentSeasonIcon");
+            seasonIconElem.classList.className = '';
+            seasonIconElem.classList.add("fas");
+            seasonIconElem.classList.add(this.currentSeason.icon);
+        },
+        changeSeason: function(){
+            for(let index in this.seasons){
+                if(this.seasons[index].name == this.currentSeasonName) {
+                    this.currentSeason = this.seasons[index];
+                }
+            }
+            this.loadSeasonIcon();
+            this.loadTable();
+        },
         loadUsers: function(){
             fetch('/scoreboard/user')
             .then(response => response.json())
@@ -138,11 +163,63 @@ var app = new Vue({
                 }
             })
         },
-        loadTable: function(){        
-            if(this.currentSeason === ""){
+        addSeason: function(){
+            if(this.newSeasonName == null){
+                notie.alert({
+                    type: 'error',
+                    text: 'Saisonname ist Pflicht'
+                });
                 return;
             }
-            fetch('/scoreboard/season/' + this.currentSeason + '/table')
+
+            if(this.newSeasonIcon == null){
+                notie.alert({
+                    type: 'error',
+                    text: 'icon ist Pflicht'
+                });
+                return;
+            }
+
+            if(this.newSeasonStart == null){
+                notie.alert({
+                    type: 'error',
+                    text: 'Saisonstart ist Pflicht'
+                });
+                return;
+            }
+
+            if(this.newSeasonEnd == null){
+                notie.alert({
+                    type: 'error',
+                    text: 'Saisonende ist Pflicht'
+                });
+                return;
+            }
+
+            const options = {
+                method: 'POST'                    
+            }
+            
+            fetch('/scoreboard/season?name=' + this.newSeasonName + '&start_date=' + this.newSeasonStart + '&end_date=' + this.newSeasonEnd + '&icon=' + this.newSeasonIcon, options)
+            .then(response => {
+                if(response.status == 200){
+                    notie.alert({
+                        type: 'success',
+                        text: 'Saison gespeichert!'
+                    });
+                } else {
+                    notie.alert({
+                        type: 'error',
+                        text: 'Saison konnte nicht gespeichert werden!'
+                    });
+                }
+            })
+        },
+        loadTable: function(){        
+            if(this.currentSeasonName === ""){
+                return;
+            }
+            fetch('/scoreboard/season/' + this.currentSeasonName + '/table')
             .then(response => response.json())
             .then(table => {
                 this.tableEntries = table;

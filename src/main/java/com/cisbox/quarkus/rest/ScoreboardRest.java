@@ -45,12 +45,12 @@ public class ScoreboardRest {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/season")
-    public Response createSeason(@QueryParam("name") String name, @QueryParam("start_date") String startDate, @QueryParam("end_date") String endDate) {
+    public Response createSeason(@QueryParam("name") String name, @QueryParam("start_date") String startDate, @QueryParam("end_date") String endDate, @QueryParam("icon") String icon) {
         List<Season> seasonList = entityPersister.readSeasons();
         if(seasonList.stream().anyMatch(currSeason -> currSeason.getName().equals(name))){
             return Response.status(409).build();
         } else {
-            Season season = new Season(name, LocalDate.parse(startDate), LocalDate.parse(endDate));
+            Season season = new Season(name, LocalDate.parse(startDate), LocalDate.parse(endDate), icon);
             seasonList.add(season);
             if(entityPersister.writeSeasons(seasonList) == 0) {
                 return Response.ok(gson.toJson(season)).build();
@@ -197,13 +197,13 @@ public class ScoreboardRest {
         ) {
         
         List<Game> gameList = entityPersister.readGames();
-        String concreteSeason = scoreboardService.handleSeason(season);
+        Optional<Season> seasonOpt = scoreboardService.getSeason(season);
 
-        if(concreteSeason == null){
+        if(seasonOpt.isEmpty()){
             return Response.status(Status.NOT_FOUND).build();
         }
         
-        var game = new Game(concreteSeason, LocalDate.now(), user1, user2, score1, score2);
+        var game = new Game(seasonOpt.get().getName(), LocalDate.now(), user1, user2, score1, score2);
         
         gameList.add(game);
         if(entityPersister.writeGames(gameList) == 0) {

@@ -10,6 +10,24 @@
         <script src="https://unpkg.com/notie"></script>
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
         
         <style>
             .notie-fullscreen {
@@ -24,25 +42,47 @@
             .notification {
                 background-color: unset;
             }
+            .fontawesome-select .fa{
+                font-family: "Font Awesome 5 Free", Open Sans;
+                font-weight: 700;
+                font-size: 24px;
+            }
         </style>
     </head>
     <body>
-        <div id="app">
+        <div id="app" v-cloak>
+            <nav class="navbar is-fixed-bottom is-dark">
+                <div id="navbarBasicExample" class="navbar-menu">                    
+                    <div class="navbar-end">
+                        <a class="navbar-item">
+                            <button class="button is-primary" title="Spieler hinzufügen" onClick="document.querySelector('#newUserModal').classList.add('is-active');">
+                                <i class="fas fa-fw fa-user-plus"></i>
+                            </button>
+                        </a>                
+                        <a class="navbar-item">
+                            <button class="button is-primary" title="Saison hinzufügen" onClick="document.querySelector('#newSeasonModal').classList.add('is-active');">
+                                <i class="fas fa-fw fa-calendar-plus"></i>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
             <section class="section">
                 <div class="container">
                     <div class="tile is-parent">
                         <div class="tile is-child">
                             <article class="tile is-child notification">                     
                                 <span class="title is-1" id="seasonContainer">
-                                    <i class="fas fa-futbol"></i>
+                                    <i id="currentSeasonIcon"></i>
                                     <i class="fas fa-trophy"></i>                                
                                 </span>
                                 <div class="select is-large">
-                                    <select id="seasonList" v-on:change="loadTable();" v-model="currentSeason">
+                                    <select id="seasonList" v-on:change="changeSeason();" v-model="currentSeasonName" >
                                         <option v-for="season of seasons" >{{ season.name }}</option>
                                     </select>
                                 </div>
-                                <table id="resultTable" class="table is-striped is-hoverable" aria-describedat="Tabelle der Saison">
+                                <table id="resultTable" class="table is-striped is-hoverable" aria-label="Tabelle der Saison">
                                     <thead>
                                         <tr>
                                             <th scope="col">Pos.</th>
@@ -53,12 +93,12 @@
                                         </tr>
                                     </thead>
                                     <tbody id="resultTableBody">
-                                        <tr v-for="tableRow of tableEntries">
-                                            <td></td>
-                                            <td>{{ tableRow.name }}</td>
-                                            <td>{{ tableRow.gameCount }}</td>                                            
-                                            <td>{{ tableRow.goalsScored }}:{{ tableRow.goalsReceived }}</td>
-                                            <td>{{ tableRow.points }}</td>
+                                        <tr v-for="(tableRow, index) of tableEntries">
+                                            <td class="has-text-right">{{ index + 1 }}</td>
+                                            <td>{{ tableRow.name }} <i class="fas fa-crown has-text-warning" v-if="index == 0"></i></td>
+                                            <td class="has-text-centered">{{ tableRow.gameCount }}</td>                                            
+                                            <td class="has-text-centered">{{ tableRow.goalsScored }}:{{ tableRow.goalsReceived }}</td>
+                                            <td class="has-text-centered">{{ tableRow.points }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -123,23 +163,95 @@
                     </div>
                 </div>
 
-                <button class="button is-primary" title="Spieler hinzufügen" onClick="document.querySelector('#newUserModal').classList.add('is-active');">
-                    <i class="fas fa-user-plus"></i>
-                </button>
                 <div class="modal" id="newUserModal">
                     <div class="modal-background"></div>
                     <div class="modal-card">
-                    <header class="modal-card-head">
-                        <p class="modal-card-title">Spieler anlegen</p>
-                        <button class="delete" aria-label="close" v-on:click="document.querySelector('#newUserModal').classList.remove('is-active');"></button>
-                    </header>
-                    <section class="modal-card-body">
-                            <label for="newUser">Username</label><input class="input column is-one-quarter" type="text" id="newUser" v-model="newUsername">                            
-                    </section>
-                    <footer class="modal-card-foot">
-                    <button class="button is-primary" v-on:click="addUser();">speichern</button>
-                    </footer>
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Spieler anlegen</p>
+                            <button class="delete" aria-label="close" onClick="document.querySelector('#newUserModal').classList.remove('is-active');"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <div class="field is-horizontal">
+                                <div class="field-label is-normal">
+                                    <label class="label">Username</label>
+                                </div>
+                                <div class="field-body">
+                                    <div class="field">
+                                        <div class="control">
+                                            <input class="input column is-half" type="text" id="newUser" v-model="newUsername" />  
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                         
+                        </section>
+                        <footer class="modal-card-foot">
+                            <button class="button is-primary" v-on:click="addUser();">speichern</button>
+                        </footer>
+                    </div>
                 </div>
+
+                <div class="modal" id="newSeasonModal">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Saison anlegen</p>
+                            <button class="delete" aria-label="close" onClick="document.querySelector('#newSeasonModal').classList.remove('is-active');"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <div class="field is-horizontal">
+                                <div class="field-label is-normal">
+                                    <label class="label">Name</label>
+                                </div>
+                                <div class="field-body">
+                                    <div class="field">
+                                        <div class="control">
+                                            <input class="input column is-half" type="text" id="newSeasonName" v-model="newSeasonName">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field is-horizontal">
+                                <div class="field-label is-normal">
+                                    <label class="label">icon</label>
+                                </div>
+                                <div class="field-body">
+                                    <div class="field">
+                                        <div class="select">
+                                            <select class="fontawesome-select fa" id="newSeasonIcon" v-model="newSeasonIcon">
+                                                <option class="fa" value="fa-futbol">&#xf1e3;</option>
+                                                <option class="fa" value="fa-quidditch">&#xf458;</option>
+                                                <option class="fa" value="fa-bullseye">&#xf140;</option>
+                                                <option class="fa" value="fa-table-tennis">&#xf45d;</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field is-horizontal">
+                                <div class="field-label is-normal">
+                                    <label class="label">Anfang</label>
+                                </div>
+                                <div class="field-body">
+                                    <div class="field">
+                                        <input class="input column is-half" type="date" id="newSeasonStart" v-model="newSeasonStart" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field is-horizontal">
+                                <div class="field-label is-normal">
+                                    <label class="label">Ende</label>
+                                </div>
+                                <div class="field-body">
+                                    <div class="field">
+                                        <input class="input column is-half" type="date" id="newSeasonEnd" v-model="newSeasonEnd" />
+                                    </div>
+                                </div>
+                            </div>                           
+                        </section>
+                        <footer class="modal-card-foot">
+                        <button class="button is-primary" v-on:click="addSeason();">speichern</button>
+                        </footer>
+                    </div>
                 </div>
             </section>
         </div>
