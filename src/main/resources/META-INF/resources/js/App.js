@@ -13,7 +13,7 @@ var app = new Vue({
         user1: "",
         user2: "",
         user1Score: 10,
-        user2Score: 10,      
+        user2Score: 10,
         
         newUsername: "",
 
@@ -59,6 +59,7 @@ var app = new Vue({
             }
             this.loadSeasonIcon();
             this.loadTable();
+            //this.displayProgress();
         },
         loadUsers: function(){
             fetch('/scoreboard/user')
@@ -104,7 +105,7 @@ var app = new Vue({
                 method: 'POST'                    
             }
 
-            fetch('/scoreboard/season/current/game?user1=' + this.user1 + '&user2=' + this.user2 + '&score1=' + this.user1Score + '&score2=' + this.user2Score, options)
+            fetch('/scoreboard/season/' + this.currentSeasonName + '/game?user1=' + this.user1 + '&user2=' + this.user2 + '&score1=' + this.user1Score + '&score2=' + this.user2Score, options)
             .then(response => {
                 if(response.status == 200){                
                     this.loadTable();
@@ -229,6 +230,18 @@ var app = new Vue({
                 }
                 this.currChampion = table[0].name;
             });
+        },
+        displayProgress: function(){
+            let progress = document.querySelector("#progressbar");
+            if(this.currentSeason == null){
+                progress.value = 0;
+                progress.max = 100;
+            } else {
+                let daysInSeason = (this.currentSeason.endDate - this.currentSeason.startDate) / (1000 * 60 * 60 * 24);
+                let remainingDaysInSeason = (this.currentSeason.endDate - new Date()) / (1000 * 60 * 60 * 24);
+                progress.value = remainingDaysInSeason;
+                progress.max = daysInSeason;
+            }            
         },
         celebrateNewChampion: function(newChampion){
             var animationEnd = Date.now();

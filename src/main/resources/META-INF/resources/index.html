@@ -77,6 +77,9 @@
                                     <i id="currentSeasonIcon"></i>
                                     <i class="fas fa-trophy"></i>                                
                                 </span>
+                                <!--<span>
+                                    <progress class="progress is-link" id="progressbar" value="0" max="100"></progress>
+                                </span>-->
                                 <div class="select is-large">
                                     <select id="seasonList" v-on:change="changeSeason();" v-model="currentSeasonName" >
                                         <option v-for="season of seasons" >{{ season.name }}</option>
