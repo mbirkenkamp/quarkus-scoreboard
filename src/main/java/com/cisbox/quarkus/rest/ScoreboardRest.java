@@ -1,5 +1,8 @@
 package com.cisbox.quarkus.rest;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -160,8 +163,8 @@ public class ScoreboardRest {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/user/{username}")
-    public Response createUsert(@PathParam("username") String username) {
-        List<User> userList = entityPersister.readUsers();
+    public Response createUser(@PathParam("username") String username) {
+        List<User> userList = entityPersister.readUsers();        
         var user = new User(username);
 
         if(userList.stream().anyMatch(currUser -> currUser.getName().equals(username))){
