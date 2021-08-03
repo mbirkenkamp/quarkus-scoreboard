@@ -52,15 +52,15 @@
     <body>
         <div id="app" v-cloak>
             <nav class="navbar is-fixed-bottom is-dark">
-                <div id="navbarBasicExample" class="navbar-menu">                    
+                <div class="navbar-menu">                    
                     <div class="navbar-end">
                         <a class="navbar-item">
-                            <button class="button is-primary" title="Spieler hinzufügen" onClick="document.querySelector('#newUserModal').classList.add('is-active');">
+                            <button class="button is-primary" title="Spieler hinzufügen" @click="newUserPanelOpen=true">
                                 <i class="fas fa-fw fa-user-plus"></i>
                             </button>
                         </a>                
                         <a class="navbar-item">
-                            <button class="button is-primary" title="Saison hinzufügen" onClick="document.querySelector('#newSeasonModal').classList.add('is-active');">
+                            <button class="button is-primary" title="Saison hinzufügen" @click="newSeasonPanelOpen=true">
                                 <i class="fas fa-fw fa-calendar-plus"></i>
                             </button>
                         </a>
@@ -74,12 +74,9 @@
                         <div class="tile is-child">
                             <article class="tile is-child notification">                     
                                 <span class="title is-1" id="seasonContainer">
-                                    <i id="currentSeasonIcon"></i>
+                                    <i class="fas" :class="currentSeason.icon"></i>
                                     <i class="fas fa-trophy"></i>                                
                                 </span>
-                                <!--<span>
-                                    <progress class="progress is-link" id="progressbar" value="0" max="100"></progress>
-                                </span>-->
                                 <div class="select is-large">
                                     <select id="seasonList" v-on:change="changeSeason();" v-model="currentSeasonName" >
                                         <option v-for="season of seasons" >{{ season.name }}</option>
@@ -107,8 +104,8 @@
                                 </table>
                             </article>  
                         </div>
-                        <div class="tile is-child is-vertical">
-                            <article class="tile is-child notification">
+                        <div class="tile is-child is-vertical" >
+                            <article class="tile is-child notification" v-if="isCurrentSeason">
                                 <h1 class="title px-auto">neues Spiel</h1>
                                 <div class="columns is-centered">
                                     <div class="column is-half">
@@ -162,16 +159,28 @@
                                     <div class="column is-one-quarter py-0"><button class="button is-primary is-pulled-right mr-3" v-on:click="addMatch()"><i class="fas fa-save"></i></button></div>
                                 </div>                               
                             </article>
+
+
+                            <article class="tile is-child notification">
+                                <h1 class="title px-auto">Spiele</h1>
+                                <div class="is-full" >
+                                    <div v-for="(game, index) of games" class="columns">
+                                        <span class="column is-one-third">{{index+1}}. {{game.user1}} <i class="fas fa-crown has-text-warning" v-if="game.user1Score>game.user2Score"></i></span>
+                                        <span class="column is-one-third">{{game.user2}} <i class="fas fa-crown has-text-warning" v-if="game.user1Score<game.user2Score"></i></span>
+                                        <span class="column is-one-third">({{game.user1Score}}:{{game.user2Score}})</span>
+                                    </div>
+                                </div>                  
+                            </article>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal" id="newUserModal">
+                <div class="modal" v-bind:class="{ 'is-active': newUserPanelOpen }">
                     <div class="modal-background"></div>
                     <div class="modal-card">
                         <header class="modal-card-head">
                             <p class="modal-card-title">Spieler anlegen</p>
-                            <button class="delete" aria-label="close" onClick="document.querySelector('#newUserModal').classList.remove('is-active');"></button>
+                            <button class="delete" aria-label="close" @click="newUserPanelOpen=false;"></button>
                         </header>
                         <section class="modal-card-body">
                             <div class="field is-horizontal">
@@ -193,12 +202,12 @@
                     </div>
                 </div>
 
-                <div class="modal" id="newSeasonModal">
+                <div class="modal" v-bind:class="{ 'is-active': newSeasonPanelOpen }">
                     <div class="modal-background"></div>
                     <div class="modal-card">
                         <header class="modal-card-head">
                             <p class="modal-card-title">Saison anlegen</p>
-                            <button class="delete" aria-label="close" onClick="document.querySelector('#newSeasonModal').classList.remove('is-active');"></button>
+                            <button class="delete" aria-label="close" @click="newSeasonPanelOpen=false;"></button>
                         </header>
                         <section class="modal-card-body">
                             <div class="field is-horizontal">

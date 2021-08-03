@@ -7,6 +7,7 @@ var app = new Vue({
         currentSeasonName: null,
         currentSeason: null,
         users: [],
+        games: [],
         tableEntries: [],
         currChampion: "",
 
@@ -15,17 +16,31 @@ var app = new Vue({
         user1Score: 10,
         user2Score: 10,
         
+        newUserPanelOpen: false,
         newUsername: "",
 
+        newSeasonPanelOpen: false,
         newSeasonName: null,
         newSeasonIcon: null,
         newSeasonStart: null,
         newSeasonEnd: null
-    },
+    },    
     created: function () {
         this.loadSeasons();
         this.loadCurrentSeason();
         this.loadUsers();
+        this.loadGames();
+    },
+    computed: {
+        isCurrentSeason: function(){
+            if(this.currentSeason === null){
+                return false;
+            } else {
+                let startDate = new Date(this.currentSeason.startDate.year, this.currentSeason.startDate.month-1, this.currentSeason.startDate.day);
+                let endDate = new Date(this.currentSeason.endDate.year, this.currentSeason.endDate.month-1, this.currentSeason.endDate.day);
+                return new Date() >= startDate && new Date() <= endDate;
+            }            
+        }
     },
     methods: {          
         loadSeasons: function(){
@@ -41,15 +56,8 @@ var app = new Vue({
             .then(season => {
                 this.currentSeason = season.value;
                 this.currentSeasonName = season.value.name;
-                this.loadSeasonIcon();
                 this.loadTable();
             });                
-        },
-        loadSeasonIcon: function(){
-            let seasonIconElem = document.querySelector("#currentSeasonIcon");
-            seasonIconElem.classList.className = '';
-            seasonIconElem.classList.add("fas");
-            seasonIconElem.classList.add(this.currentSeason.icon);
         },
         changeSeason: function(){
             for(let index in this.seasons){
@@ -57,15 +65,24 @@ var app = new Vue({
                     this.currentSeason = this.seasons[index];
                 }
             }
-            this.loadSeasonIcon();
             this.loadTable();
-            //this.displayProgress();
+            this.loadGames();
         },
         loadUsers: function(){
             fetch('/scoreboard/user')
             .then(response => response.json())
             .then(users => {
                 this.users = users;
+            });
+        },
+        loadGames: function(){
+            if(this.currentSeasonName === ""){
+                return;
+            }
+            fetch('/scoreboard/season/' + this.currentSeasonName + '/game')
+            .then(response => response.json())
+            .then(games => {
+                this.games = games;
             });
         },
         addMatch: function(){
@@ -105,7 +122,7 @@ var app = new Vue({
                 method: 'POST'                    
             }
 
-            fetch('/scoreboard/season/' + this.currentSeasonName + '/game?user1=' + this.user1 + '&user2=' + this.user2 + '&score1=' + this.user1Score + '&score2=' + this.user2Score, options)
+            fetch('/scoreboard/season/' + this.currentSeasonName + '/game?user1=' + encodeURI(this.user1) + '&user2=' + encodeURI(this.user2) + '&score1=' + this.user1Score + '&score2=' + this.user2Score, options)
             .then(response => {
                 if(response.status == 200){                
                     this.loadTable();
@@ -130,23 +147,15 @@ var app = new Vue({
                 return;
             }
 
-            if(this.newUsername.includes(" ")){
-                notie.alert({
-                    type: 'error',
-                    text: 'Spielername darf keine Leerzeichen enthalten (SORRY)!'
-                });
-                return;
-            }
-
             const options = {
                 method: 'POST'                    
             }
 
-            fetch('/scoreboard/user/' + this.newUsername, options)
+            fetch('/scoreboard/user/' + encodeURI(this.newUsername), options)
             .then(response => {
                 if(response.status == 200){
                     this.loadUsers();
-                    document.querySelector('#newUserModal').classList.remove('is-active');
+                    this.newUserPanelOpen = false;
                     notie.alert({
                         type: 'success',
                         text: 'Spieler angelegt!'
@@ -214,6 +223,7 @@ var app = new Vue({
                         text: 'Saison konnte nicht gespeichert werden!'
                     });
                 }
+                this.newSeasonPanelOpen = false;
             })
         },
         loadTable: function(){        
@@ -225,23 +235,14 @@ var app = new Vue({
             .then(table => {
                 this.tableEntries = table;
                 
-                if(this.currChampion !== undefined && this.currChampion !== "" && table[0].name != this.currChampion){
+                if(this.currChampion !== undefined && this.currChampion !== "" && table[0].name != this.currChampion && this.isCurrentSeason){
                     this.celebrateNewChampion(table[0].name);
                 }
                 this.currChampion = table[0].name;
             });
         },
-        displayProgress: function(){
-            let progress = document.querySelector("#progressbar");
-            if(this.currentSeason == null){
-                progress.value = 0;
-                progress.max = 100;
-            } else {
-                let daysInSeason = (this.currentSeason.endDate - this.currentSeason.startDate) / (1000 * 60 * 60 * 24);
-                let remainingDaysInSeason = (this.currentSeason.endDate - new Date()) / (1000 * 60 * 60 * 24);
-                progress.value = remainingDaysInSeason;
-                progress.max = daysInSeason;
-            }            
+        randomInRange: function(min, max) {
+            return Math.random() * (max - min) + min;
         },
         celebrateNewChampion: function(newChampion){
             var animationEnd = Date.now();
@@ -254,6 +255,8 @@ var app = new Vue({
             var duration = 60 * 1000;
             animationEnd = Date.now() + duration;
 
+            let vueInstance = this;
+
             setInterval(
                 function(){   
                     var timeLeft = animationEnd - Date.now();
@@ -262,16 +265,13 @@ var app = new Vue({
                         return;      
                     }           
                     confetti({
-                        angle: this.randomInRange(55, 125),
-                        spread: this.randomInRange(50, 70),
-                        particleCount: this.randomInRange(50, 100),
-                        origin: { x: this.randomInRange(0.1, 0.9), y: this.randomInRange(0.1, 0.9) }
+                        angle: vueInstance.randomInRange(55, 125),
+                        spread: vueInstance.randomInRange(50, 70),
+                        particleCount: vueInstance.randomInRange(50, 100),
+                        origin: { x: vueInstance.randomInRange(0.1, 0.9), y: vueInstance.randomInRange(0.1, 0.9) }
                     })
                 }
             , 700);                
-        },
-        randomInRange: function(min, max) {
-            return Math.random() * (max - min) + min;
         }
     }
 });
