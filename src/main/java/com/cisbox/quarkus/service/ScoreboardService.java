@@ -26,7 +26,7 @@ public class ScoreboardService {
     @Inject 
     private CsvEntityPersister entityPersister;
 
-    public List<TableEntry> getSeasonTable(String season){
+    public List<TableEntry> getSeasonTable(String season) {
         List<Game> gameList = entityPersister.readGames();
         Map<String, TableEntry> sortedMap = new HashMap<>();
         

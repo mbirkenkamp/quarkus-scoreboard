@@ -1,35 +1,35 @@
 "use strict";
 
-var app = new Vue({
-    el: '#app',
-    data: {
-        seasons: [],
-        currentSeasonName: null,
-        currentSeason: null,
-        users: [],
-        games: [],
-        tableEntries: [],
-        currChampion: "",
+var app = Vue.createApp({
+    data() {
+        return {
+            seasons: [],
+            currentSeasonName: null,
+            currentSeason: null,
+            users: [],
+            games: [],
+            tableEntries: [],
+            currChampion: "",
 
-        user1: "",
-        user2: "",
-        user1Score: 10,
-        user2Score: 10,
-        
-        newUserPanelOpen: false,
-        newUsername: "",
+            user1: "",
+            user2: "",
+            user1Score: 10,
+            user2Score: 10,
+            
+            newUserPanelOpen: false,
+            newUsername: "",
 
-        newSeasonPanelOpen: false,
-        newSeasonName: null,
-        newSeasonIcon: null,
-        newSeasonStart: null,
-        newSeasonEnd: null
+            newSeasonPanelOpen: false,
+            newSeasonName: null,
+            newSeasonIcon: null,
+            newSeasonStart: null,
+            newSeasonEnd: null
+        }
     },    
     created: function () {
         this.loadSeasons();
         this.loadCurrentSeason();
-        this.loadUsers();
-        this.loadGames();
+        this.loadUsers();        
     },
     computed: {
         isCurrentSeason: function(){
@@ -57,6 +57,7 @@ var app = new Vue({
                 this.currentSeason = season.value;
                 this.currentSeasonName = season.value.name;
                 this.loadTable();
+                this.loadGames();
             });                
         },
         changeSeason: function(){
@@ -274,4 +275,5 @@ var app = new Vue({
             , 700);                
         }
     }
-});
+})
+app.mount("#app");

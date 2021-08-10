@@ -1,8 +1,5 @@
 package com.cisbox.quarkus.rest;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -139,6 +136,22 @@ public class ScoreboardRest {
                 )
             )
         ).build();
+    }
+
+    /**
+     * get gamelist for season
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/game")
+    public Response getGamelist() {
+        List<Game> gameList = entityPersister.readGames();
+
+        return Response.ok(
+                gson.toJson(
+                    gameList
+                )
+            ).build();
     }
 
     /**
