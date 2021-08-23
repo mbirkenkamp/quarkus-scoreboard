@@ -109,7 +109,7 @@
                                                 <td class="has-text-centered">{{ tableRow.gameCount }}</td>                                            
                                                 <td class="has-text-centered">{{ tableRow.goalsScored }}:{{ tableRow.goalsReceived }}</td>
                                                 <td class="has-text-centered">{{ tableRow.points }}</td>
-                                                <td class="has-text-centered">{{ tableRow.weightedScore }}</td>
+                                                <td class="has-text-centered">{{ tableRow.weightedScore }}%</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -138,7 +138,6 @@
                                         <div class="column is-one-quarter"></div>
                                         <div class="select">
                                             <select id="user1Score" v-model="user1Score">    
-                                                <option value="10">10</option>
                                                 <option value="9">9</option>
                                                 <option value="8">8</option>
                                                 <option value="7">7</option>
@@ -154,7 +153,6 @@
                                         &nbsp;&nbsp;:&nbsp;&nbsp;
                                         <div class="select">
                                             <select id="user2Score" v-model="user2Score">    
-                                                <option value="10">10</option>
                                                 <option value="9">9</option>
                                                 <option value="8">8</option>
                                                 <option value="7">7</option>
@@ -175,9 +173,9 @@
                                 <article class="tile is-child notification">
                                     <h1 class="title px-auto">Spiele</h1>
                                     <div class="is-full" >
-                                        <ol v-for="(game, index) of games">
+                                        <ol v-for="game of getReversedGameList">
                                             <ul class="columns">
-                                                <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.user1Score>game.user2Score}">{{index+1}}. {{game.user1}}</span>
+                                                <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.user1Score>game.user2Score}">{{game.user1}}</span>
                                                 <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.user1Score<game.user2Score}">{{game.user2}}</span>
                                                 <span class="column is-one-third">({{game.user1Score}}:{{game.user2Score}})</span>
                                             </ul>

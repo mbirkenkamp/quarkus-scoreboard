@@ -40,6 +40,9 @@ var app = Vue.createApp({
                 let endDate = new Date(this.currentSeason.endDate.year, this.currentSeason.endDate.month-1, this.currentSeason.endDate.day);
                 return new Date() >= startDate && new Date() <= endDate;
             }            
+        },
+        getReversedGameList() {
+            return this.games.reverse();
         }
     },
     methods: {          
@@ -127,6 +130,7 @@ var app = Vue.createApp({
             .then(response => {
                 if(response.status == 200){                
                     this.loadTable();
+                    this.loadGames();
                     notie.alert({
                         type: 'success',
                         text: 'Spiel gespeichert!'
