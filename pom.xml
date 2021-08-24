@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cisbox.quarkus</groupId>
   <artifactId>quarkus-scoreboard</artifactId>
-  <version>1.0.9</version>
+  <version>1.1.0</version>
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>

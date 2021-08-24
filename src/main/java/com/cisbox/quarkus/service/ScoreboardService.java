@@ -17,6 +17,8 @@ import com.cisbox.quarkus.dto.TableEntry;
 import com.cisbox.quarkus.entity.Game;
 import com.cisbox.quarkus.entity.Season;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @ApplicationScoped
@@ -34,8 +36,13 @@ public class ScoreboardService {
 
         for(Game currGame : gameList) {
             if(currGame.getSeasonName().equals(season)){
-                sortedMap.get(currGame.getUser1()).logGame(currGame.getUser1Score(), currGame.getUser2Score());
-                sortedMap.get(currGame.getUser2()).logGame(currGame.getUser2Score(), currGame.getUser1Score());
+                sortedMap.get(currGame.getTeam1User1()).logGame(currGame.getTeam1Score(), currGame.getTeam2Score());
+                sortedMap.get(currGame.getTeam2User1()).logGame(currGame.getTeam2Score(), currGame.getTeam1Score());
+
+                if(!StringUtils.isEmpty(currGame.getTeam1User2()) && !StringUtils.isEmpty(currGame.getTeam2User2())) {
+                    sortedMap.get(currGame.getTeam1User2()).logGame(currGame.getTeam1Score(), currGame.getTeam2Score());
+                    sortedMap.get(currGame.getTeam2User2()).logGame(currGame.getTeam2Score(), currGame.getTeam1Score());
+                }
             }
         }
 

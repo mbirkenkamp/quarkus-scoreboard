@@ -11,24 +11,26 @@ var app = Vue.createApp({
             tableEntries: [],
             currChampion: "",
 
-            user1: "",
-            user2: "",
-            user1Score: 10,
-            user2Score: 10,
+            team1User1: "",
+            team1User2: "",
+            team2User1: "",
+            team2User2: "",
+            team1Score: 9,
+            team2Score: 9,
             
             newUserPanelOpen: false,
             newUsername: "",
 
             newSeasonPanelOpen: false,
             newSeasonName: null,
+            newSeasonTeamSize: 1,
             newSeasonIcon: null,
             newSeasonStart: null,
             newSeasonEnd: null
         }
     },    
     created: function () {
-        this.loadSeasons();
-        this.loadCurrentSeason();
+        this.loadSeasons();        
         this.loadUsers();        
     },
     computed: {
@@ -51,17 +53,23 @@ var app = Vue.createApp({
             .then(response => response.json())
             .then(seasons => {
                 this.seasons = seasons;
+                this.loadCurrentSeason();
             });                
         },
-        loadCurrentSeason: function(){            
-            fetch('/scoreboard/season/current')
-            .then(response => response.json())
-            .then(season => {
-                this.currentSeason = season.value;
-                this.currentSeasonName = season.value.name;
+        loadCurrentSeason: function(){  
+            let currDate = new Date();
+            let currentSeasons = this.seasons.filter(
+                                    currSeason => 
+                                        currDate >= new Date(currSeason.startDate.year, currSeason.startDate.month-1, currSeason.startDate.day) 
+                                        && currDate <= new Date(currSeason.endDate.year, currSeason.endDate.month-1, currSeason.endDate.day)
+                                );
+
+            if(currentSeasons.length > 0){
+                this.currentSeason = currentSeasons[0];
+                this.currentSeasonName = this.currentSeason.name;
                 this.loadTable();
                 this.loadGames();
-            });                
+            }
         },
         changeSeason: function(){
             for(let index in this.seasons){
@@ -90,7 +98,7 @@ var app = Vue.createApp({
             });
         },
         addMatch: function(){
-            if(this.user1 == this.user2){
+            if(this.team1User1 == this.team2User1 || this.team1User1 == this.team2User2 || this.team1User2 == this.team2User1 || this.team1User2 == this.team2User2){
                 notie.alert({
                     type: 'error',
                     text: 'Spiele gegen sich selbst werden nicht gewertet!'
@@ -98,7 +106,7 @@ var app = Vue.createApp({
                 return;
             }
 
-            if(this.user1Score === ""){
+            if(this.team1Score === ""){
                 notie.alert({
                     type: 'error',
                     text: 'Anzahl Tore Spieler 1 fehlt!'
@@ -106,7 +114,7 @@ var app = Vue.createApp({
                 return;
             }
 
-            if(this.user2Score === ""){
+            if(this.team2Score === ""){
                 notie.alert({
                     type: 'error',
                     text: 'Anzahl Tore Spieler 2 fehlt!'
@@ -114,7 +122,7 @@ var app = Vue.createApp({
                 return;
             }
 
-            if(this.user1Score === this.user2Score){
+            if(this.team1Score === this.team2Score){
                 notie.alert({
                     type: 'error',
                     text: 'there can only be one! <img src="https://media04.meinbezirk.at/article/2017/02/03/4/9837064_XXL.jpg" height="500"/>'
@@ -126,22 +134,28 @@ var app = Vue.createApp({
                 method: 'POST'                    
             }
 
-            fetch('/scoreboard/season/' + this.currentSeasonName + '/game?user1=' + encodeURI(this.user1) + '&user2=' + encodeURI(this.user2) + '&score1=' + this.user1Score + '&score2=' + this.user2Score, options)
-            .then(response => {
-                if(response.status == 200){                
-                    this.loadTable();
-                    this.loadGames();
-                    notie.alert({
-                        type: 'success',
-                        text: 'Spiel gespeichert!'
-                    });
-                } else {
-                    notie.alert({
-                        type: 'error',
-                        text: 'Spiel konnte nicht gespeichert werden!'
-                    });
-                }
-            })
+            let url = '/scoreboard/season/' + this.currentSeasonName + '/game?team1user1=' + encodeURI(this.user1) + '&team2user1=' + encodeURI(this.user2) + '&score1=' + this.user1Score + '&score2=' + this.user2Score;
+            if(this.currentSeason.teamSize ==2){
+                url = '/scoreboard/season/' + this.currentSeasonName + '/teamgame?team1user1=' + encodeURI(this.team1User1) + '&team1user2=' + encodeURI(this.team1User2) + '&team2user1=' + encodeURI(this.team2User1) + '&team2user2=' + encodeURI(this.team2User2) + '&score1=' + this.team1Score + '&score2=' + this.team2Score;
+            }
+
+            fetch(url, options)
+                .then(response => {
+                    if(response.status == 200){                
+                        this.loadTable();
+                        this.loadGames();
+                        notie.alert({
+                            type: 'success',
+                            text: 'Spiel gespeichert!'
+                        });
+                    } else {
+                        notie.alert({
+                            type: 'error',
+                            text: 'Spiel konnte nicht gespeichert werden!'
+                        });
+                    }
+                });
+            
         },
         addUser: function(){
             if(this.newUsername == ""){
@@ -215,7 +229,7 @@ var app = Vue.createApp({
                 method: 'POST'                    
             }
             
-            fetch('/scoreboard/season?name=' + this.newSeasonName + '&start_date=' + this.newSeasonStart + '&end_date=' + this.newSeasonEnd + '&icon=' + this.newSeasonIcon, options)
+            fetch('/scoreboard/season?name=' + this.newSeasonName + '&start_date=' + this.newSeasonStart + '&end_date=' + this.newSeasonEnd + '&icon=' + this.newSeasonIcon + '&team_size=' + this.newSeasonTeamSize, options)
             .then(response => {
                 if(response.status == 200){
                     notie.alert({

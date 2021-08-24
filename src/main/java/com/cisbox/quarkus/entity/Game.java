@@ -20,27 +20,30 @@ public class Game {
     @CsvDate(value = "yyyy-MM-dd")
     private LocalDate date;
 
-    @CsvBindByName private String user1;
-    @CsvBindByName private String user2;
-    @CsvBindByName private int user1Score;
-    @CsvBindByName private int user2Score;
+    @CsvBindByName private String team1User1;
+    @CsvBindByName private String team1User2;
+    @CsvBindByName private String team2User1;
+    @CsvBindByName private String team2User2;
+    @CsvBindByName private int team1Score;
+    @CsvBindByName private int team2Score;
 
-    public Game(String seasonName, String user1, String user2, String score) {
+    public Game(String seasonName, String team1User1, String team2User1, Integer team1Score, Integer team2Score) {
         this.seasonName = seasonName;
-        this.user1 = user1;
-        this.user2 = user2;
+        this.team1User1 = team1User1;
+        this.team2User1 = team2User1;
         this.date = LocalDate.now();
-        if(Pattern.matches("[0-9]:[0-9]", score)){
-            this.user1Score = Integer.parseInt(score.split(":")[0]);
-            this.user2Score = Integer.parseInt(score.split(":")[1]);
-        }
+        this.team1Score = team1Score;
+        this.team2Score = team2Score;
     }
 
-    public String getWinner(){
-        if (user1Score > user2Score) {
-            return user1;
-        } else {
-            return user2;
-        }
+    public Game(String seasonName, String team1User1, String team1User2, String team2User1, String team2User2, Integer team1Score, Integer team2Score) {
+        this.seasonName = seasonName;
+        this.team1User1 = team1User1;
+        this.team1User2 = team1User2;
+        this.team2User1 = team2User1;
+        this.team2User2 = team2User2;
+        this.date = LocalDate.now();
+        this.team1Score = team1Score;
+        this.team2Score = team2Score;
     }
 }

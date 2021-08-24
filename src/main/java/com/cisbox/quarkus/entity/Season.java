@@ -25,4 +25,7 @@ public class Season {
     
     @CsvBindByName
     private String icon; 
+
+    @CsvBindByName
+    private int teamSize; 
 }

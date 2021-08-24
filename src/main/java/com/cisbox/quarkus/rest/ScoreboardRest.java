@@ -45,12 +45,12 @@ public class ScoreboardRest {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/season")
-    public Response createSeason(@QueryParam("name") String name, @QueryParam("start_date") String startDate, @QueryParam("end_date") String endDate, @QueryParam("icon") String icon) {
+    public Response createSeason(@QueryParam("name") String name, @QueryParam("start_date") String startDate, @QueryParam("end_date") String endDate, @QueryParam("icon") String icon, @QueryParam("team_size") int teamSize) {
         List<Season> seasonList = entityPersister.readSeasons();
         if(seasonList.stream().anyMatch(currSeason -> currSeason.getName().equals(name))){
             return Response.status(409).build();
         } else {
-            Season season = new Season(name, LocalDate.parse(startDate), LocalDate.parse(endDate), icon);
+            Season season = new Season(name, LocalDate.parse(startDate), LocalDate.parse(endDate), icon, teamSize);
             seasonList.add(season);
             if(entityPersister.writeSeasons(seasonList) == 0) {
                 return Response.ok(gson.toJson(season)).build();
@@ -219,7 +219,46 @@ public class ScoreboardRest {
             return Response.status(Status.NOT_FOUND).build();
         }
         
-        var game = new Game(seasonOpt.get().getName(), LocalDate.now(), user1, user2, score1, score2);
+        var game = new Game(seasonOpt.get().getName(), user1, user2, score1, score2);
+        
+        gameList.add(game);
+        if(entityPersister.writeGames(gameList) == 0) {
+            return Response.ok(gson.toJson(game)).build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    /**
+     * create game
+     * @param season
+     * @param user1
+     * @param user2
+     * @param score1
+     * @param score2
+     * @return
+     */
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/season/{season}/teamgame")
+    public Response addTeamGameToSeason(
+            @PathParam("season") String season, 
+            @QueryParam("team1user1") String team1User1,
+            @QueryParam("team1user2") String team1User2,
+            @QueryParam("team2user1") String team2User1,
+            @QueryParam("team2user2") String team2User2,
+            @QueryParam("score1") int score1,
+            @QueryParam("score2") int score2
+        ) {
+        
+        List<Game> gameList = entityPersister.readGames();
+        Optional<Season> seasonOpt = scoreboardService.getSeason(season);
+
+        if(seasonOpt.isEmpty()){
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        
+        var game = new Game(seasonOpt.get().getName(), LocalDate.now(), team1User1, team1User2, team2User1, team2User2, score1, score2);
         
         gameList.add(game);
         if(entityPersister.writeGames(gameList) == 0) {

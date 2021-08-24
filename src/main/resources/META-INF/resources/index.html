@@ -121,14 +121,26 @@
                                     <div class="columns is-centered">
                                         <div class="column is-half">
                                             <div class="select is-pulled-right">
-                                                <select id="user1" data-source="users" v-model="user1">
-                                                    <option v-for="user of users" >{{ user.name }}</option>                          
+                                                <select id="team1User1" data-source="users" v-model="team1User1">
+                                                    <option v-for="user of users" >{{ user.name }}</option>                     
+                                                </select>
+                                            </div>
+                                            <br v-if="currentSeason.teamSize==2" />
+                                            <div class="select is-pulled-right" v-if="currentSeason.teamSize==2">
+                                                <select id="team1User1" data-source="users" v-model="team1User2" >
+                                                    <option v-for="user of users" >{{ user.name }}</option>                     
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="column is-half">
                                             <div class="select">
-                                                <select id="user2" data-source="users" v-model="user2">
+                                                <select id="team2User1" data-source="users" v-model="team2User1">
+                                                    <option v-for="user of users" >{{ user.name }}</option>                     
+                                                </select>
+                                            </div>
+                                            <br v-if="currentSeason.teamSize==2" />
+                                            <div class="select" v-if="currentSeason.teamSize==2">
+                                                <select id="team2User1" data-source="users" v-model="team2User2">
                                                     <option v-for="user of users" >{{ user.name }}</option>                     
                                                 </select>
                                             </div>
@@ -137,7 +149,7 @@
                                     <div class="control columns is-centered">
                                         <div class="column is-one-quarter"></div>
                                         <div class="select">
-                                            <select id="user1Score" v-model="user1Score">    
+                                            <select id="team1Score" v-model="team1Score">    
                                                 <option value="9">9</option>
                                                 <option value="8">8</option>
                                                 <option value="7">7</option>
@@ -149,10 +161,10 @@
                                                 <option value="1">1</option>
                                                 <option value="0">0</option>
                                             </select>
-                                        </div>
+                                        </div>                                                                     
                                         &nbsp;&nbsp;:&nbsp;&nbsp;
                                         <div class="select">
-                                            <select id="user2Score" v-model="user2Score">    
+                                            <select id="team2Score" v-model="team2Score">    
                                                 <option value="9">9</option>
                                                 <option value="8">8</option>
                                                 <option value="7">7</option>
@@ -164,7 +176,7 @@
                                                 <option value="1">1</option>
                                                 <option value="0">0</option>
                                             </select>
-                                        </div>
+                                        </div>                                       
                                         <div class="column is-one-quarter py-0"><button class="button is-primary is-pulled-right mr-3" @click="addMatch()"><i class="fas fa-save"></i></button></div>
                                     </div>                               
                                 </article>
@@ -175,9 +187,9 @@
                                     <div class="is-full" >
                                         <ol v-for="game of getReversedGameList">
                                             <ul class="columns">
-                                                <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.user1Score>game.user2Score}">{{game.user1}}</span>
-                                                <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.user1Score<game.user2Score}">{{game.user2}}</span>
-                                                <span class="column is-one-third">({{game.user1Score}}:{{game.user2Score}})</span>
+                                                <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.team1Score>game.team2Score}">{{game.team1User1}}<br v-if="currentSeason.teamSize==2" />{{game.team1User2}}</span>
+                                                <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.team1Score<game.team2Score}">{{game.team2User1}}<br v-if="currentSeason.teamSize==2" />{{game.team2User2}}</span>
+                                                <span class="column is-one-third">({{game.team1Score}}:{{game.team2Score}})</span>
                                             </ul>
                                         </ol>
                                     </div>                  
@@ -229,6 +241,21 @@
                                         <div class="field">
                                             <div class="control">
                                                 <input class="input column is-half" type="text" id="newSeasonName" v-model="newSeasonName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal">
+                                        <label class="label">Teamgröße</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field">
+                                            <div class="select">
+                                                <select class="" id="newSeasonTeamSize" v-model="newSeasonTeamSize">
+                                                    <option value="1">Einzel</option>
+                                                    <option value="2">Doppel</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
