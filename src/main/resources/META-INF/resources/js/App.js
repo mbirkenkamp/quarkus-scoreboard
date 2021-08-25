@@ -106,7 +106,7 @@ var app = Vue.createApp({
                 return;
             }
 
-            if(this.currentSeason.teamSize = 2){
+            if(this.currentSeason.teamSize == 2){
                 if(this.team1User1 == this.team2User2 || this.team1User2 == this.team2User1 || this.team1User2 == this.team2User2){
                     notie.alert({
                         type: 'error',
