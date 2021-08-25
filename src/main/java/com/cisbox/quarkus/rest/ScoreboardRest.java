@@ -206,8 +206,8 @@ public class ScoreboardRest {
     @Path("/season/{season}/game")
     public Response addGameToSeason(
             @PathParam("season") String season, 
-            @QueryParam("user1") String user1,
-            @QueryParam("user2") String user2, 
+            @QueryParam("team1user1") String team1User1,
+            @QueryParam("team2user1") String team2User1,
             @QueryParam("score1") int score1,
             @QueryParam("score2") int score2
         ) {
@@ -219,7 +219,7 @@ public class ScoreboardRest {
             return Response.status(Status.NOT_FOUND).build();
         }
         
-        var game = new Game(seasonOpt.get().getName(), user1, user2, score1, score2);
+        var game = new Game(seasonOpt.get().getName(), team1User1, team2User1, score1, score2);
         
         gameList.add(game);
         if(entityPersister.writeGames(gameList) == 0) {

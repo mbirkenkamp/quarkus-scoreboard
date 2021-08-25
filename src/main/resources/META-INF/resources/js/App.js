@@ -144,7 +144,7 @@ var app = Vue.createApp({
                 method: 'POST'                    
             }
 
-            let url = '/scoreboard/season/' + this.currentSeasonName + '/game?team1user1=' + encodeURI(this.user1) + '&team2user1=' + encodeURI(this.user2) + '&score1=' + this.user1Score + '&score2=' + this.user2Score;
+            let url = '/scoreboard/season/' + this.currentSeasonName + '/game?team1user1=' + encodeURI(this.team1User1) + '&team2user1=' + encodeURI(this.team2User1) + '&score1=' + this.team1Score + '&score2=' + this.team2Score;
             if(this.currentSeason.teamSize ==2){
                 url = '/scoreboard/season/' + this.currentSeasonName + '/teamgame?team1user1=' + encodeURI(this.team1User1) + '&team1user2=' + encodeURI(this.team1User2) + '&team2user1=' + encodeURI(this.team2User1) + '&team2user2=' + encodeURI(this.team2User2) + '&score1=' + this.team1Score + '&score2=' + this.team2Score;
             }
