@@ -10,6 +10,7 @@ var app = Vue.createApp({
             games: [],
             tableEntries: [],
             currChampion: "",
+            hoverName: "",
 
             team1User1: "",
             team1User2: "",
@@ -44,10 +45,24 @@ var app = Vue.createApp({
             }            
         },
         getReversedGameList() {
-            return this.games.reverse();
+            if(this.hoverName == ""){
+                return this.games.reverse();
+            } else {
+                return this.games.reverse().filter(currGame => currGame.team1User1 == this.hoverName 
+                                                            || currGame.team1User2 == this.hoverName
+                                                            || currGame.team2User1 == this.hoverName
+                                                            || currGame.team2User2 == this.hoverName);
+            }
         }
     },
-    methods: {          
+    methods: {  
+        hoverTableEntry: function(event) {     
+            if(event == null){
+                this.hoverName = "";
+            } else {   
+                this.hoverName = event.target.innerText.trim();
+            }
+        },     
         loadSeasons: function(){
             fetch('/scoreboard/season')
             .then(response => response.json())
@@ -77,6 +92,7 @@ var app = Vue.createApp({
                     this.currentSeason = this.seasons[index];
                 }
             }
+            this.currChampion = null;
             this.loadTable();
             this.loadGames();
         },
