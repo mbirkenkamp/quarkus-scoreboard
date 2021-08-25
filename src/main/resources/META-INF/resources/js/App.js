@@ -97,13 +97,23 @@ var app = Vue.createApp({
                 this.games = games;
             });
         },
-        addMatch: function(){
-            if(this.team1User1 == this.team2User1 || this.team1User1 == this.team2User2 || this.team1User2 == this.team2User1 || this.team1User2 == this.team2User2){
+        addMatch: function(){            
+            if(this.team1User1 == this.team2User1){
                 notie.alert({
                     type: 'error',
                     text: 'Spiele gegen sich selbst werden nicht gewertet!'
                 });
                 return;
+            }
+
+            if(this.currentSeason.teamSize = 2){
+                if(this.team1User1 == this.team2User2 || this.team1User2 == this.team2User1 || this.team1User2 == this.team2User2){
+                    notie.alert({
+                        type: 'error',
+                        text: 'Spiele gegen sich selbst werden nicht gewertet!'
+                    });
+                    return;
+                }
             }
 
             if(this.team1Score === ""){
