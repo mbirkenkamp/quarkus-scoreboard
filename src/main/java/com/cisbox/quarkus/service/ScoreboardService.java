@@ -1,6 +1,5 @@
 package com.cisbox.quarkus.service;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,18 +48,6 @@ public class ScoreboardService {
         return sortedMap.values().stream()
                     .sorted(Collections.reverseOrder())
                     .collect(Collectors.toList());
-    }
-
-    public String handleSeason(String season) {
-        if(season.equals("current")){
-            Optional<Season> output = entityPersister.readSeasons().stream()
-            .filter(currSeason -> LocalDate.now().isAfter(currSeason.getStartDate()) 
-                	&& LocalDate.now().isBefore(currSeason.getEndDate()))
-            .findAny();
-            return output.isPresent() ? output.get().getName() : null;
-        } else {
-            return season;
-        }
     }
 
     public Optional<Season> getSeason(String seasonName) {

@@ -1,7 +1,8 @@
 package com.cisbox.quarkus.entity;
 
 import java.time.LocalDate;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.List;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
@@ -45,5 +46,21 @@ public class Game {
         this.date = LocalDate.now();
         this.team1Score = team1Score;
         this.team2Score = team2Score;
+    }
+
+    public List<String> getWinners() {        
+        if(team1Score > team2Score){
+            return Arrays.asList(team1User1, team1User2);
+        } else {
+            return Arrays.asList(team2User1, team2User2);
+        }
+    }
+
+    public Integer getPositiveGoalDiff() {        
+        if(team1Score > team2Score){
+            return team1Score - team2Score;
+        } else {
+            return team2Score - team1Score;
+        }
     }
 }
