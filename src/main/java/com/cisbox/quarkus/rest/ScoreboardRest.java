@@ -77,13 +77,11 @@ public class ScoreboardRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/season/{season}")
     public Response getSeason(@PathParam("season") String season) {
-        String concreteSeason = scoreboardService.handleSeason(season);
-
-        if(concreteSeason == null){
+        if(season == null){
             return Response.status(Status.NOT_FOUND).build();
         }
 
-        Optional<Season> seasonObj = scoreboardService.getSeason(concreteSeason);
+        Optional<Season> seasonObj = scoreboardService.getSeason(season);
         
         if(!seasonObj.isPresent()){
             return Response.status(404).build();
@@ -99,15 +97,13 @@ public class ScoreboardRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/season/{season}/table")
     public Response getSeasonTable(@PathParam("season") String season) {
-        String concreteSeason = scoreboardService.handleSeason(season);
-
-        if(concreteSeason == null){
+        if(season == null){
             return Response.status(Status.NOT_FOUND).build();
         }
 
         return Response.ok(
             gson.toJson(
-                scoreboardService.getSeasonTable(concreteSeason)
+                scoreboardService.getSeasonTable(season)
             )
         ).build();
     }
@@ -119,10 +115,7 @@ public class ScoreboardRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/season/{season}/game")
     public Response getSeasonGamelist(@PathParam("season") String season) {
-
-        String concreteSeason = scoreboardService.handleSeason(season);
-
-        if(concreteSeason == null){
+        if(season == null){
             return Response.status(Status.NOT_FOUND).build();
         }
 
@@ -130,7 +123,7 @@ public class ScoreboardRest {
         return Response.ok(
             gson.toJson(
                 gameList.stream()
-                .filter(currGame -> currGame.getSeasonName().equals(concreteSeason))
+                .filter(currGame -> currGame.getSeasonName().equals(season))
                 .collect(
                     Collectors.toList()
                 )
