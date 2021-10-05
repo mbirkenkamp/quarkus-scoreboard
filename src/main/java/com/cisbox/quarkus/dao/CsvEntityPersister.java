@@ -1,6 +1,5 @@
 package com.cisbox.quarkus.dao;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,6 +12,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
+import com.cisbox.quarkus.entity.Department;
 import com.cisbox.quarkus.entity.Game;
 import com.cisbox.quarkus.entity.Season;
 import com.cisbox.quarkus.entity.User;
@@ -32,16 +32,18 @@ import lombok.Getter;
 @ApplicationScoped
 @RegisterForReflection
 @Named("EntityPersister")
-public class CsvEntityPersister implements EntityPersister{   
+public class CsvEntityPersister implements EntityPersister{ 
+    private static final String DATA_DIRECTORY_VAR = "scoreboard.data.directory";  
     @Getter private String userFilePath = null;
     @Getter private String seasonFilePath = null;
     @Getter private String gameFilePath = null;
+    @Getter private String departmentFilePath = null;
 
     private CsvEntityPersister(){
-        System.out.println(new File(".").getAbsolutePath());
-        userFilePath = ConfigProvider.getConfig().getValue("scoreboard.data.directory", String.class) + "/user.csv";
-        seasonFilePath = ConfigProvider.getConfig().getValue("scoreboard.data.directory", String.class) + "/season.csv";
-        gameFilePath = ConfigProvider.getConfig().getValue("scoreboard.data.directory", String.class) + "/game.csv";
+        userFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/user.csv";
+        seasonFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/season.csv";
+        gameFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/game.csv";
+        departmentFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/department.csv";
     }
 
     @CacheResult(cacheName = "user-cache")
@@ -107,6 +109,31 @@ public class CsvEntityPersister implements EntityPersister{
             Writer writer = new FileWriter(gameFilePath);
             StatefulBeanToCsv<Game> beanToCsv = new StatefulBeanToCsvBuilder<Game>(writer).build();
             beanToCsv.write(gameList);        
+            writer.close();
+        } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @CacheResult(cacheName = "department-cache")
+    @Override
+    public List<Department> readDepartments() {
+        try {
+            return new CsvToBeanBuilder<Department>(new FileReader(gameFilePath)).withType(Department.class).build().parse();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    @CacheInvalidateAll(cacheName = "department-cache")
+    @Override
+    public int writeDepartments(List<Department> departmentList) {
+        try {
+            Writer writer = new FileWriter(departmentFilePath);
+            StatefulBeanToCsv<Department> beanToCsv = new StatefulBeanToCsvBuilder<Department>(writer).build();
+            beanToCsv.write(departmentList);        
             writer.close();
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
             return 1;
