@@ -1,11 +1,10 @@
 package com.cisbox.quarkus.service;
 
-import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,23 +25,36 @@ public class AwardScheduler {
 
     @Scheduled(cron="0 0 1 * * ?")     
     void awardChampions() {
-        Map<String, User> userMap = entityPersister.readUsers().stream().collect(Collectors.toMap(User::getName, Function.identity()));
-        Map<String, Integer> awardMap = new HashMap<>();
+        List<User> userList = entityPersister.readUsers();
+        Map<String, Integer> winMap = new HashMap<>();
+        Map<String, Integer> goalMap = new HashMap<>();
 
-        entityPersister.readSeasons().stream()
-            .filter(currSeason -> LocalDate.now().isAfter(currSeason.getEndDate()))
-            .forEach(currSeason -> {
-                String seasonWinnerName = scoreboardService.getSeasonTable(currSeason.getName()).get(0).getName();
-                if(!awardMap.containsKey(seasonWinnerName)){
-                    awardMap.put(seasonWinnerName, 0);
+        entityPersister.readGames().stream()
+        .forEach(currGame -> 
+            currGame.getWinners().stream().forEach(currWinner -> {
+                if(currWinner == null || currWinner.isBlank()){
+                    return;
                 }
-                awardMap.put(seasonWinnerName, awardMap.get(seasonWinnerName) + 1);
-            });
+
+                if(winMap.get(currWinner) == null){
+                    winMap.put(currWinner, 0);
+                    goalMap.put(currWinner, 0);
+                }
+
+                winMap.put(currWinner, winMap.get(currWinner) + 1);
+                goalMap.put(currWinner, goalMap.get(currWinner) + currGame.getPositiveGoalDiff());
+            }
+            )
+        );
         
-        for(Entry<String, Integer> currAwardMapEntry : awardMap.entrySet()){
-            userMap.get(currAwardMapEntry.getKey()).setAwards(currAwardMapEntry.getValue());
+        String winner = winMap.entrySet().stream().max(Comparator.comparing(Entry::getValue)).get().getKey();
+        String topScorer = goalMap.entrySet().stream().max(Comparator.comparing(Entry::getValue)).get().getKey();
+
+        for(User user : userList){
+            user.setMostWins(user.getName().equals(winner));
+            user.setMostGoals(user.getName().equals(topScorer));
         }
 
-        entityPersister.writeUsers(userMap.values());
+        entityPersister.writeUsers(userList);
     }
 }

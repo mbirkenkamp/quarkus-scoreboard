@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User {    
     @CsvBindByName private String name;
-    @CsvBindByName private Integer awards = 0;
+    @CsvBindByName private boolean mostWins = false;
+    @CsvBindByName private boolean mostGoals = false;
 
     public User(String name) {
         this.name = name;

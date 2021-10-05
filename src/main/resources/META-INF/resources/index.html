@@ -55,6 +55,9 @@
                 white-space: nowrap;
                 overflow: hidden;
             }
+            .w-80 {
+                width: 80%;
+            }
         </style>
     </head>
     <body>
@@ -81,9 +84,9 @@
                     <div class="container">
                         <div class="tile is-parent">
                             <div class="tile is-child">
-                                <article class="tile is-child notification">                     
+                                <article class="tile is-child notification">                 
                                     <span class="title is-1" id="seasonContainer">
-                                        <i class="fas" :class="currentSeason.icon"></i>
+                                        <i class="fas" :class="currentSeason.icon" v-if="currSeason != null"></i>
                                         <i class="fas fa-trophy"></i>                                
                                     </span>
                                     <div class="select is-large">
@@ -105,7 +108,7 @@
                                         <tbody id="resultTableBody">
                                             <tr v-for="(tableRow, index) of tableEntries">
                                                 <td class="has-text-right">{{ index + 1 }}</td>
-                                                <td class="text-ellipsis" @mouseover="hoverTableEntry($event)" @mouseleave="hoverTableEntry()">{{ tableRow.name }} <i class="fas fa-crown has-text-warning" v-if="index == 0"></i></td>
+                                                <td class="text-ellipsis" @mouseover="hoverTableEntry($event)" @mouseleave="hoverTableEntry()">{{ tableRow.name }} <i class="fas fa-crown has-text-warning" v-if="tableRow.name == getTopWinner"></i><i class="fas fa-futbol has-text-warning" v-if="tableRow.name == getTopScorer"></i></td>
                                                 <td class="has-text-centered">{{ tableRow.gameCount }}</td>                                            
                                                 <td class="has-text-centered">{{ tableRow.goalsScored }}:{{ tableRow.goalsReceived }}</td>
                                                 <td class="has-text-centered">{{ tableRow.points }}</td>
@@ -115,6 +118,7 @@
                                     </table>
                                 </article>  
                             </div>
+
                             <div class="tile is-child is-vertical" >
                                 <article class="tile is-child notification" v-if="isCurrentSeason">
                                     <h1 class="title px-auto">neues Spiel</h1>
@@ -176,7 +180,8 @@
                                                 <option value="1">1</option>
                                                 <option value="0">0</option>
                                             </select>
-                                        </div>                                       
+                                        </div> 
+                                        <button @click="openGamePanel = true"><i class="fas fa-arrows-alt"></i></button>                                      
                                         <div class="column is-one-quarter py-0"><button class="button is-primary is-pulled-right mr-3" @click="addMatch()"><i class="fas fa-save"></i></button></div>
                                     </div>                               
                                 </article>
@@ -225,6 +230,19 @@
                         </div>
                     </div>
 
+                    <div class="modal" :class="{ 'is-active': openGamePanel }">
+                        <div class="modal-background"></div>
+                        <div class="modal-card w-80">
+                            <header class="modal-card-head">
+                                <p class="modal-card-title">Spiel</p>
+                                <button class="delete" aria-label="close" @click="openGamePanel=false;"></button>
+                            </header>
+                            <section class="modal-card-body">  
+                                <game-highlight v-bind:season="currentSeasonName" v-bind:team1user1="team1User1" v-bind:team2user1="team2User1" v-bind:team1user2="team1User2" v-bind:team2user2="team2User2" @game-finished="addDetailedMatch"></game-highlight>
+                            </section>
+                        </div>
+                    </div>
+
                     <div class="modal" :class="{ 'is-active': newSeasonPanelOpen }">
                         <div class="modal-background"></div>
                         <div class="modal-card">
@@ -241,6 +259,21 @@
                                         <div class="field">
                                             <div class="control">
                                                 <input class="input column is-half" type="text" id="newSeasonName" v-model="newSeasonName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal">
+                                        <label class="label">Typ</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field">
+                                            <div class="select">
+                                                <select class="" id="newSeasonType" v-model="newSeasonType">
+                                                    <option value="1">Tabelle</option>
+                                                    <option value="2">Turnier</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

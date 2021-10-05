@@ -25,9 +25,12 @@ var app = Vue.createApp({
             newSeasonPanelOpen: false,
             newSeasonName: null,
             newSeasonTeamSize: 1,
+            newSeasonType: 1,
             newSeasonIcon: null,
             newSeasonStart: null,
-            newSeasonEnd: null
+            newSeasonEnd: null,
+
+            openGamePanel: false
         }
     },    
     created: function () {
@@ -53,6 +56,20 @@ var app = Vue.createApp({
                                                             || currGame.team2User1 == this.hoverName
                                                             || currGame.team2User2 == this.hoverName);
             }
+        },
+        getTopScorer() {
+            let topScorerArray = this.users.filter(currUser => currUser.mostGoals);
+            if(topScorerArray.length == 1){
+                return topScorerArray[0].name;
+            }
+            return null;
+        },
+        getTopWinner() {
+            let winnerArray = this.users.filter(currUser => currUser.mostWins);
+            if(winnerArray.length == 1){
+                return winnerArray[0].name;
+            }
+            return null;
         }
     },
     methods: {  
@@ -101,6 +118,8 @@ var app = Vue.createApp({
             .then(response => response.json())
             .then(users => {
                 this.users = users;
+
+
             });
         },
         loadGames: function(){
@@ -112,6 +131,17 @@ var app = Vue.createApp({
             .then(games => {
                 this.games = games;
             });
+        },
+        addDetailedMatch: function(season, team1user1, team1user2, team2user1, team2user2, team1Score, team2Score) {
+            this.season = season;
+            this.team1User1 = team1user1;
+            this.team1User2 = team1user2;
+            this.team2User1 = team2user1;
+            this.team2User2 = team2user2;
+            this.team1Score = team1Score;
+            this.team2Score = team2Score;
+            this.openGamePanel=false;
+            this.addMatch();
         },
         addMatch: function(){            
             if(this.team1User1 == this.team2User1){
@@ -319,5 +349,63 @@ var app = Vue.createApp({
             , 700);                
         }
     }
-})
+});
+app.component('game-highlight', {
+    props: ['season','team1user1','team1user2','team2user1','team2user2'],    
+    emits: ['team1-goal','team2-goal','game-finished'], 
+    data() {
+        return {
+            'team1score': 0,
+            'team2score': 0
+        }
+    },   
+    template: `
+    <nav class="level">
+        <div class="level-left">
+            <div class="level-item is-size-1">
+                {{team1user1}}<br />
+                {{team1user2}}<br />
+            </div>    
+        </div>
+        <div class="level-item has-text-centered is-size-1">            
+            <button class="button is-primary is-size-1" @click="addTeam1Goal">+</button>&nbsp;{{team1score}}:{{team2score}}&nbsp;<button class="button is-primary is-size-1" @click="addTeam2Goal">+</button>
+        </div>
+        <!-- Right side -->
+        <div class="level-right">
+            <div class="level-item is-size-1">
+                {{team2user1}}<br />
+                {{team2user2}}<br />
+            </div>
+        </div>
+    </nav>
+    `,
+    computed: {
+        getWinner() {
+            if(this.team1score > this.team2score){
+                return this.team1user1;
+            } else {
+                return this.team2user1;
+            }
+        }
+    },    
+    methods: {
+        addTeam1Goal: function() {
+            this.team1score += 1;
+            if(this.team1score == 9) {
+                this.celebrateChampion();
+            }
+        },
+        addTeam2Goal: function() {
+            this.team2score += 1;
+            if(this.team2score == 9) {
+                this.celebrateChampion();
+            }
+        },
+        celebrateChampion: function() {
+            console.log("GOIL!!!! " + this.getWinner);
+            this.$emit('game-finished', this.season, this.team1user1, this.team1user2, this.team2user1, this.team2user2, this.team1score, this.team2score);
+        }
+    }
+});
+
 app.mount("#app");
