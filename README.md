@@ -10,3 +10,4 @@ Thanks:
 - Bulma (https://bulma.io)
 - canvas-confetti (https://github.com/catdad/canvas-confetti)
 - Font Awesome (https://fontawesome.com)
+- Bulma - Prefers Dark (https://github.com/jloh/bulma-prefers-dark)

@@ -30,7 +30,11 @@ var app = Vue.createApp({
             newSeasonStart: null,
             newSeasonEnd: null,
 
-            openGamePanel: false
+            openGamePanel: false,
+
+            ui: {
+                colorScheme: "fa-moon"
+            }
         }
     },    
     created: function () {
@@ -347,6 +351,15 @@ var app = Vue.createApp({
                     })
                 }
             , 700);                
+        },
+        toggleColor: function() {
+            if(this.ui.colorScheme == "fa-moon"){
+                document.querySelector("#darkmode").disabled = "";
+                this.ui.colorScheme = "fa-sun";
+            } else {
+                document.querySelector("#darkmode").disabled = "disabled";
+                this.ui.colorScheme = "fa-moon";
+            }
         }
     }
 });

@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" />
         <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/dark.css" id="darkmode" disabled="disabled">
         <script src="https://unpkg.com/notie"></script>
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
         <script src="https://unpkg.com/vue@next"></script>
@@ -58,10 +59,16 @@
             .w-80 {
                 width: 80%;
             }
+            #colorswitch {
+                position: absolute;
+                top: 20px;
+                right: 30px;
+            }
         </style>
     </head>
     <body>
         <div id="app">
+            <i id="colorswitch" class="fas" :class="ui.colorScheme" @click="toggleColor()"></i>
             <div v-cloak>
                 <nav class="navbar is-fixed-bottom is-dark">
                     <div class="navbar-menu">                    
