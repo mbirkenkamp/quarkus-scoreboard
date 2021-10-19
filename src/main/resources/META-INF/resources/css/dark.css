@@ -1,5 +1,4 @@
 /*! Bulma Prefers Dark  | MIT License | github.com/jloh/bulma-prefers-dark */
-@media (prefers-color-scheme: dark) {
     html {
       background-color: #17181c;
     }
@@ -3862,9 +3861,9 @@
     .navbar.is-white .navbar-burger {
       color: #0a0a0a;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-white .navbar-start > .navbar-item,
     .navbar.is-white .navbar-start .navbar-link,
     .navbar.is-white .navbar-end > .navbar-item,
@@ -3896,7 +3895,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-black {
       background-color: black;
       color: white;
@@ -3917,9 +3915,9 @@
     .navbar.is-black .navbar-burger {
       color: white;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-black .navbar-start > .navbar-item,
     .navbar.is-black .navbar-start .navbar-link,
     .navbar.is-black .navbar-end > .navbar-item,
@@ -3951,7 +3949,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-light {
       background-color: #dbdbdb;
       color: #363636;
@@ -3972,9 +3969,9 @@
     .navbar.is-light .navbar-burger {
       color: #363636;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-light .navbar-start > .navbar-item,
     .navbar.is-light .navbar-start .navbar-link,
     .navbar.is-light .navbar-end > .navbar-item,
@@ -4006,7 +4003,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-dark {
       background-color: #1c1c1c;
       color: whitesmoke;
@@ -4027,9 +4023,9 @@
     .navbar.is-dark .navbar-burger {
       color: whitesmoke;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-dark .navbar-start > .navbar-item,
     .navbar.is-dark .navbar-start .navbar-link,
     .navbar.is-dark .navbar-end > .navbar-item,
@@ -4061,7 +4057,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-primary {
       background-color: #009e86;
       color: #fff;
@@ -4082,9 +4077,9 @@
     .navbar.is-primary .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-primary .navbar-start > .navbar-item,
     .navbar.is-primary .navbar-start .navbar-link,
     .navbar.is-primary .navbar-end > .navbar-item,
@@ -4116,7 +4111,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-link {
       background-color: #205bbc;
       color: #fff;
@@ -4137,9 +4131,9 @@
     .navbar.is-link .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-link .navbar-start > .navbar-item,
     .navbar.is-link .navbar-start .navbar-link,
     .navbar.is-link .navbar-end > .navbar-item,
@@ -4171,7 +4165,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-info {
       background-color: #0f81cc;
       color: #fff;
@@ -4192,9 +4185,9 @@
     .navbar.is-info .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-info .navbar-start > .navbar-item,
     .navbar.is-info .navbar-start .navbar-link,
     .navbar.is-info .navbar-end > .navbar-item,
@@ -4226,7 +4219,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-success {
       background-color: #1ca64c;
       color: #fff;
@@ -4247,9 +4239,9 @@
     .navbar.is-success .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-success .navbar-start > .navbar-item,
     .navbar.is-success .navbar-start .navbar-link,
     .navbar.is-success .navbar-end > .navbar-item,
@@ -4281,7 +4273,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-warning {
       background-color: #ffd324;
       color: rgba(0, 0, 0, 0.7);
@@ -4302,9 +4293,9 @@
     .navbar.is-warning .navbar-burger {
       color: rgba(0, 0, 0, 0.7);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-warning .navbar-start > .navbar-item,
     .navbar.is-warning .navbar-start .navbar-link,
     .navbar.is-warning .navbar-end > .navbar-item,
@@ -4336,7 +4327,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-danger {
       background-color: #ff0537;
       color: #fff;
@@ -4357,9 +4347,9 @@
     .navbar.is-danger .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-danger .navbar-start > .navbar-item,
     .navbar.is-danger .navbar-start .navbar-link,
     .navbar.is-danger .navbar-end > .navbar-item,
@@ -4391,7 +4381,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-white-dark {
       background-color: white;
       color: #0a0a0a;
@@ -4412,9 +4401,9 @@
     .navbar.is-white-dark .navbar-burger {
       color: #0a0a0a;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-white-dark .navbar-start > .navbar-item,
     .navbar.is-white-dark .navbar-start .navbar-link,
     .navbar.is-white-dark .navbar-end > .navbar-item,
@@ -4446,7 +4435,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-black-dark {
       background-color: #0a0a0a;
       color: white;
@@ -4467,9 +4455,9 @@
     .navbar.is-black-dark .navbar-burger {
       color: white;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-black-dark .navbar-start > .navbar-item,
     .navbar.is-black-dark .navbar-start .navbar-link,
     .navbar.is-black-dark .navbar-end > .navbar-item,
@@ -4501,7 +4489,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-light-dark {
       background-color: whitesmoke;
       color: #363636;
@@ -4522,9 +4509,9 @@
     .navbar.is-light-dark .navbar-burger {
       color: #363636;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-light-dark .navbar-start > .navbar-item,
     .navbar.is-light-dark .navbar-start .navbar-link,
     .navbar.is-light-dark .navbar-end > .navbar-item,
@@ -4556,7 +4543,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-dark-dark {
       background-color: #363636;
       color: whitesmoke;
@@ -4577,9 +4563,9 @@
     .navbar.is-dark-dark .navbar-burger {
       color: whitesmoke;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-dark-dark .navbar-start > .navbar-item,
     .navbar.is-dark-dark .navbar-start .navbar-link,
     .navbar.is-dark-dark .navbar-end > .navbar-item,
@@ -4611,7 +4597,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-primary-dark {
       background-color: #00d1b2;
       color: #fff;
@@ -4632,9 +4617,9 @@
     .navbar.is-primary-dark .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-primary-dark .navbar-start > .navbar-item,
     .navbar.is-primary-dark .navbar-start .navbar-link,
     .navbar.is-primary-dark .navbar-end > .navbar-item,
@@ -4666,7 +4651,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-link-dark {
       background-color: #3273dc;
       color: #fff;
@@ -4687,9 +4671,9 @@
     .navbar.is-link-dark .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-link-dark .navbar-start > .navbar-item,
     .navbar.is-link-dark .navbar-start .navbar-link,
     .navbar.is-link-dark .navbar-end > .navbar-item,
@@ -4721,7 +4705,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-info-dark {
       background-color: #209cee;
       color: #fff;
@@ -4742,9 +4725,9 @@
     .navbar.is-info-dark .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-info-dark .navbar-start > .navbar-item,
     .navbar.is-info-dark .navbar-start .navbar-link,
     .navbar.is-info-dark .navbar-end > .navbar-item,
@@ -4775,8 +4758,7 @@
       color: #fff;
     }
   }
-  
-  @media (prefers-color-scheme: dark) {
+
     .navbar.is-success-dark {
       background-color: #23d160;
       color: #fff;
@@ -4797,9 +4779,9 @@
     .navbar.is-success-dark .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-success-dark .navbar-start > .navbar-item,
     .navbar.is-success-dark .navbar-start .navbar-link,
     .navbar.is-success-dark .navbar-end > .navbar-item,
@@ -4831,7 +4813,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.is-warning-dark {
       background-color: #ffdd57;
       color: rgba(0, 0, 0, 0.7);
@@ -4852,9 +4833,9 @@
     .navbar.is-warning-dark .navbar-burger {
       color: rgba(0, 0, 0, 0.7);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-warning-dark .navbar-start > .navbar-item,
     .navbar.is-warning-dark .navbar-start .navbar-link,
     .navbar.is-warning-dark .navbar-end > .navbar-item,
@@ -4885,8 +4866,7 @@
       color: rgba(0, 0, 0, 0.7);
     }
   }
-  
-  @media (prefers-color-scheme: dark) {
+
     .navbar.is-danger-dark {
       background-color: #ff3860;
       color: #fff;
@@ -4907,9 +4887,9 @@
     .navbar.is-danger-dark .navbar-burger {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  
+  @media screen  and (min-width: 1088px) {
     .navbar.is-danger-dark .navbar-start > .navbar-item,
     .navbar.is-danger-dark .navbar-start .navbar-link,
     .navbar.is-danger-dark .navbar-end > .navbar-item,
@@ -4941,7 +4921,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .navbar.has-shadow {
       box-shadow: 0 2px 0 0 #242424;
     }
@@ -4974,9 +4953,9 @@
     .navbar-divider {
       background-color: #242424;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .navbar-menu {
       background-color: #17181c;
       box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1);
@@ -4986,7 +4965,7 @@
     }
   }
   
-  @media screen and (prefers-color-scheme: dark) and (min-width: 1088px) {
+  @media screen  and (min-width: 1088px) {
     .navbar.is-transparent .navbar-dropdown a.navbar-item:hover {
       background-color: #242424;
       color: white;
@@ -5027,7 +5006,6 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .pagination-previous,
     .pagination-next,
     .pagination-link {
@@ -5163,15 +5141,14 @@
     .hero.is-white-dark .subtitle strong {
       color: #0a0a0a;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-white .navbar-menu, .hero.is-white-dark .navbar-menu {
       background-color: #e6e6e6;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-white .navbar-item,
     .hero.is-white .navbar-link, .hero.is-white-dark .navbar-item,
     .hero.is-white-dark .navbar-link {
@@ -5209,15 +5186,14 @@
     .hero.is-white.is-bold, .hero.is-white-dark.is-bold {
       background-image: linear-gradient(141deg, #d1c7c9 0%, #e6e6e6 71%, #f3f2f2 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-white.is-bold .navbar-menu, .hero.is-white-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #d1c7c9 0%, #e6e6e6 71%, #f3f2f2 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-black, .hero.is-black-dark {
       background-color: black;
       color: white;
@@ -5238,15 +5214,14 @@
     .hero.is-black-dark .subtitle strong {
       color: white;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-black .navbar-menu, .hero.is-black-dark .navbar-menu {
       background-color: black;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-black .navbar-item,
     .hero.is-black .navbar-link, .hero.is-black-dark .navbar-item,
     .hero.is-black-dark .navbar-link {
@@ -5284,15 +5259,14 @@
     .hero.is-black.is-bold, .hero.is-black-dark.is-bold {
       background-image: linear-gradient(141deg, black 0%, black 71%, #0d0d0d 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-black.is-bold .navbar-menu, .hero.is-black-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, black 0%, black 71%, #0d0d0d 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-light, .hero.is-light-dark {
       background-color: #dbdbdb;
       color: #363636;
@@ -5313,15 +5287,14 @@
     .hero.is-light-dark .subtitle strong {
       color: #363636;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-light .navbar-menu, .hero.is-light-dark .navbar-menu {
       background-color: #dbdbdb;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-light .navbar-item,
     .hero.is-light .navbar-link, .hero.is-light-dark .navbar-item,
     .hero.is-light-dark .navbar-link {
@@ -5359,15 +5332,14 @@
     .hero.is-light.is-bold, .hero.is-light-dark.is-bold {
       background-image: linear-gradient(141deg, #c8bcbe 0%, #dbdbdb 71%, #e9e7e7 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-light.is-bold .navbar-menu, .hero.is-light-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #c8bcbe 0%, #dbdbdb 71%, #e9e7e7 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-dark, .hero.is-dark-dark {
       background-color: #1c1c1c;
       color: whitesmoke;
@@ -5388,15 +5360,14 @@
     .hero.is-dark-dark .subtitle strong {
       color: whitesmoke;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-dark .navbar-menu, .hero.is-dark-dark .navbar-menu {
       background-color: #1c1c1c;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-dark .navbar-item,
     .hero.is-dark .navbar-link, .hero.is-dark-dark .navbar-item,
     .hero.is-dark-dark .navbar-link {
@@ -5434,15 +5405,14 @@
     .hero.is-dark.is-bold, .hero.is-dark-dark.is-bold {
       background-image: linear-gradient(141deg, #030202 0%, #1c1c1c 71%, #2b2727 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-dark.is-bold .navbar-menu, .hero.is-dark-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #030202 0%, #1c1c1c 71%, #2b2727 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-primary, .hero.is-primary-dark {
       background-color: #009e86;
       color: #fff;
@@ -5463,15 +5433,14 @@
     .hero.is-primary-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-primary .navbar-menu, .hero.is-primary-dark .navbar-menu {
       background-color: #009e86;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-primary .navbar-item,
     .hero.is-primary .navbar-link, .hero.is-primary-dark .navbar-item,
     .hero.is-primary-dark .navbar-link {
@@ -5509,15 +5478,14 @@
     .hero.is-primary.is-bold, .hero.is-primary-dark.is-bold {
       background-image: linear-gradient(141deg, #006b49 0%, #009e86 71%, #00b5b8 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-primary.is-bold .navbar-menu, .hero.is-primary-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #006b49 0%, #009e86 71%, #00b5b8 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-link, .hero.is-link-dark {
       background-color: #205bbc;
       color: #fff;
@@ -5538,15 +5506,14 @@
     .hero.is-link-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-link .navbar-menu, .hero.is-link-dark .navbar-menu {
       background-color: #205bbc;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-link .navbar-item,
     .hero.is-link .navbar-link, .hero.is-link-dark .navbar-item,
     .hero.is-link-dark .navbar-link {
@@ -5584,15 +5551,14 @@
     .hero.is-link.is-bold, .hero.is-link-dark.is-bold {
       background-image: linear-gradient(141deg, #105b98 0%, #205bbc 71%, #1d46d7 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-link.is-bold .navbar-menu, .hero.is-link-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #105b98 0%, #205bbc 71%, #1d46d7 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-info, .hero.is-info-dark {
       background-color: #0f81cc;
       color: #fff;
@@ -5613,15 +5579,14 @@
     .hero.is-info-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-info .navbar-menu, .hero.is-info-dark .navbar-menu {
       background-color: #0f81cc;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-info .navbar-item,
     .hero.is-info .navbar-link, .hero.is-info-dark .navbar-item,
     .hero.is-info-dark .navbar-link {
@@ -5659,15 +5624,14 @@
     .hero.is-info.is-bold, .hero.is-info-dark.is-bold {
       background-image: linear-gradient(141deg, #037fa5 0%, #0f81cc 71%, #0b6cea 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-info.is-bold .navbar-menu, .hero.is-info-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #037fa5 0%, #0f81cc 71%, #0b6cea 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-success, .hero.is-success-dark {
       background-color: #1ca64c;
       color: #fff;
@@ -5688,15 +5652,14 @@
     .hero.is-success-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-success .navbar-menu, .hero.is-success-dark .navbar-menu {
       background-color: #1ca64c;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-success .navbar-item,
     .hero.is-success .navbar-link, .hero.is-success-dark .navbar-item,
     .hero.is-success-dark .navbar-link {
@@ -5734,15 +5697,14 @@
     .hero.is-success.is-bold, .hero.is-success-dark.is-bold {
       background-image: linear-gradient(141deg, #0e8123 0%, #1ca64c 71%, #1ac170 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-success.is-bold .navbar-menu, .hero.is-success-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #0e8123 0%, #1ca64c 71%, #1ac170 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-warning, .hero.is-warning-dark {
       background-color: #ffd324;
       color: rgba(0, 0, 0, 0.7);
@@ -5763,15 +5725,14 @@
     .hero.is-warning-dark .subtitle strong {
       color: rgba(0, 0, 0, 0.7);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-warning .navbar-menu, .hero.is-warning-dark .navbar-menu {
       background-color: #ffd324;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-warning .navbar-item,
     .hero.is-warning .navbar-link, .hero.is-warning-dark .navbar-item,
     .hero.is-warning-dark .navbar-link {
@@ -5809,15 +5770,14 @@
     .hero.is-warning.is-bold, .hero.is-warning-dark.is-bold {
       background-image: linear-gradient(141deg, #f09800 0%, #ffd324 71%, #fff93d 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-warning.is-bold .navbar-menu, .hero.is-warning-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #f09800 0%, #ffd324 71%, #fff93d 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-danger, .hero.is-danger-dark {
       background-color: #ff0537;
       color: #fff;
@@ -5838,15 +5798,14 @@
     .hero.is-danger-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-danger .navbar-menu, .hero.is-danger-dark .navbar-menu {
       background-color: #ff0537;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-danger .navbar-item,
     .hero.is-danger .navbar-link, .hero.is-danger-dark .navbar-item,
     .hero.is-danger-dark .navbar-link {
@@ -5884,15 +5843,14 @@
     .hero.is-danger.is-bold, .hero.is-danger-dark.is-bold {
       background-image: linear-gradient(141deg, #d1004d 0%, #ff0537 71%, #ff1f26 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen and (max-width: 768px) {
     .hero.is-danger.is-bold .navbar-menu, .hero.is-danger-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #d1004d 0%, #ff0537 71%, #ff1f26 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-white-dark {
       background-color: white;
       color: #0a0a0a;
@@ -5911,15 +5869,14 @@
     .hero.is-white-dark .subtitle strong {
       color: #0a0a0a;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-white-dark .navbar-menu {
       background-color: white;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-white-dark .navbar-item,
     .hero.is-white-dark .navbar-link {
       color: rgba(10, 10, 10, 0.7);
@@ -5954,15 +5911,14 @@
     .hero.is-white-dark.is-bold {
       background-image: linear-gradient(141deg, #e6e6e6 0%, white 71%, white 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-white-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #e6e6e6 0%, white 71%, white 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-black-dark {
       background-color: #0a0a0a;
       color: white;
@@ -5981,15 +5937,14 @@
     .hero.is-black-dark .subtitle strong {
       color: white;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-black-dark .navbar-menu {
       background-color: #0a0a0a;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-black-dark .navbar-item,
     .hero.is-black-dark .navbar-link {
       color: rgba(255, 255, 255, 0.7);
@@ -6024,15 +5979,15 @@
     .hero.is-black-dark.is-bold {
       background-image: linear-gradient(141deg, black 0%, #0a0a0a 71%, #181616 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen  and (max-width: 768px) {
     .hero.is-black-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, black 0%, #0a0a0a 71%, #181616 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
+  
     .hero.is-light-dark {
       background-color: whitesmoke;
       color: #363636;
@@ -6051,15 +6006,14 @@
     .hero.is-light-dark .subtitle strong {
       color: #363636;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-light-dark .navbar-menu {
       background-color: whitesmoke;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-light-dark .navbar-item,
     .hero.is-light-dark .navbar-link {
       color: rgba(54, 54, 54, 0.7);
@@ -6094,15 +6048,14 @@
     .hero.is-light-dark.is-bold {
       background-image: linear-gradient(141deg, #dfd8d9 0%, whitesmoke 71%, white 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen and (max-width: 768px) {
     .hero.is-light-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #dfd8d9 0%, whitesmoke 71%, white 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-dark-dark {
       background-color: #363636;
       color: whitesmoke;
@@ -6121,15 +6074,14 @@
     .hero.is-dark-dark .subtitle strong {
       color: whitesmoke;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen and (max-width: 1087px) {
     .hero.is-dark-dark .navbar-menu {
       background-color: #363636;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-dark-dark .navbar-item,
     .hero.is-dark-dark .navbar-link {
       color: rgba(245, 245, 245, 0.7);
@@ -6164,15 +6116,14 @@
     .hero.is-dark-dark.is-bold {
       background-image: linear-gradient(141deg, #1f191a 0%, #363636 71%, #46403f 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen and (max-width: 768px) {
     .hero.is-dark-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #1f191a 0%, #363636 71%, #46403f 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-primary-dark {
       background-color: #00d1b2;
       color: #fff;
@@ -6191,15 +6142,14 @@
     .hero.is-primary-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen and (max-width: 1087px) {
     .hero.is-primary-dark .navbar-menu {
       background-color: #00d1b2;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-primary-dark .navbar-item,
     .hero.is-primary-dark .navbar-link {
       color: rgba(255, 255, 255, 0.7);
@@ -6234,15 +6184,14 @@
     .hero.is-primary-dark.is-bold {
       background-image: linear-gradient(141deg, #009e6c 0%, #00d1b2 71%, #00e7eb 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen and (max-width: 768px) {
     .hero.is-primary-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #009e6c 0%, #00d1b2 71%, #00e7eb 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-link-dark {
       background-color: #3273dc;
       color: #fff;
@@ -6261,15 +6210,14 @@
     .hero.is-link-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen and (max-width: 1087px) {
     .hero.is-link-dark .navbar-menu {
       background-color: #3273dc;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-link-dark .navbar-item,
     .hero.is-link-dark .navbar-link {
       color: rgba(255, 255, 255, 0.7);
@@ -6304,15 +6252,13 @@
     .hero.is-link-dark.is-bold {
       background-image: linear-gradient(141deg, #1577c6 0%, #3273dc 71%, #4366e5 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  @media screen and (max-width: 768px) {
     .hero.is-link-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #1577c6 0%, #3273dc 71%, #4366e5 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-info-dark {
       background-color: #209cee;
       color: #fff;
@@ -6331,15 +6277,14 @@
     .hero.is-info-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen and (max-width: 1087px) {
     .hero.is-info-dark .navbar-menu {
       background-color: #209cee;
     }
-  }
   
-  @media (prefers-color-scheme: dark) {
+  
     .hero.is-info-dark .navbar-item,
     .hero.is-info-dark .navbar-link {
       color: rgba(255, 255, 255, 0.7);
@@ -6374,15 +6319,14 @@
     .hero.is-info-dark.is-bold {
       background-image: linear-gradient(141deg, #04a6d7 0%, #209cee 71%, #3287f5 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen and (max-width: 768px) {
     .hero.is-info-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #04a6d7 0%, #209cee 71%, #3287f5 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-success-dark {
       background-color: #23d160;
       color: #fff;
@@ -6401,15 +6345,14 @@
     .hero.is-success-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen  and (max-width: 1087px) {
     .hero.is-success-dark .navbar-menu {
       background-color: #23d160;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-success-dark .navbar-item,
     .hero.is-success-dark .navbar-link {
       color: rgba(255, 255, 255, 0.7);
@@ -6446,13 +6389,12 @@
     }
   }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  @media screen and (max-width: 768px) {
     .hero.is-success-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #12af2f 0%, #23d160 71%, #2ce28a 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-warning-dark {
       background-color: #ffdd57;
       color: rgba(0, 0, 0, 0.7);
@@ -6471,15 +6413,13 @@
     .hero.is-warning-dark .subtitle strong {
       color: rgba(0, 0, 0, 0.7);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  @media screen and (max-width: 1087px) {
     .hero.is-warning-dark .navbar-menu {
       background-color: #ffdd57;
     }
-  }
   
-  @media (prefers-color-scheme: dark) {
+  
     .hero.is-warning-dark .navbar-item,
     .hero.is-warning-dark .navbar-link {
       color: rgba(0, 0, 0, 0.7);
@@ -6514,15 +6454,14 @@
     .hero.is-warning-dark.is-bold {
       background-image: linear-gradient(141deg, #ffaf24 0%, #ffdd57 71%, #fffa70 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
+  @media screen and (max-width: 768px) {
     .hero.is-warning-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #ffaf24 0%, #ffdd57 71%, #fffa70 100%);
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-danger-dark {
       background-color: #ff3860;
       color: #fff;
@@ -6541,15 +6480,14 @@
     .hero.is-danger-dark .subtitle strong {
       color: #fff;
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 1087px) {
+  
+  @media screen and (max-width: 1087px) {
     .hero.is-danger-dark .navbar-menu {
       background-color: #ff3860;
     }
   }
   
-  @media (prefers-color-scheme: dark) {
     .hero.is-danger-dark .navbar-item,
     .hero.is-danger-dark .navbar-link {
       color: rgba(255, 255, 255, 0.7);
@@ -6584,17 +6522,14 @@
     .hero.is-danger-dark.is-bold {
       background-image: linear-gradient(141deg, #ff0561 0%, #ff3860 71%, #ff5257 100%);
     }
-  }
   
-  @media screen and (prefers-color-scheme: dark) and (max-width: 768px) {
+  
     .hero.is-danger-dark.is-bold .navbar-menu {
       background-image: linear-gradient(141deg, #ff0561 0%, #ff3860 71%, #ff5257 100%);
     }
-  }
   
-  @media (prefers-color-scheme: dark) {
     .footer {
       background-color: #121212;
     }
-  }
   /*# sourceMappingURL=bulma-prefers-dark.css.map */
+}
