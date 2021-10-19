@@ -32,7 +32,6 @@ pipeline {
                     sh "chmod 777 ./mvnw"
                     sh "./mvnw clean package -Pnative " +
                         " -Dquarkus.jib.environment-variables.version=$BUILD_TAG" +
-                        " -Dquarkus.container-image.additional-tags=latest" +
                         " -Dquarkus.native.container-build=true" +
                         " -Dquarkus.container-image.push=true" +
                         " -Dquarkus.container-image.registry=$DOCKER_REGISTRY" +
