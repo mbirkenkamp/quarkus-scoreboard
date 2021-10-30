@@ -9,7 +9,10 @@ var app = Vue.createApp({
             users: [],
             games: [],
             tableEntries: [],
-            currChampion: "",
+            currChampion: {
+                season: "",
+                user: ""
+            },
             hoverName: "",
 
             team1User1: "",
@@ -113,7 +116,6 @@ var app = Vue.createApp({
                     this.currentSeason = this.seasons[index];
                 }
             }
-            this.currChampion = null;
             this.loadTable();
             this.loadGames();
         },
@@ -314,10 +316,11 @@ var app = Vue.createApp({
             .then(table => {
                 this.tableEntries = table;
                 
-                if(this.currChampion !== undefined && this.currChampion !== "" && table[0].name != this.currChampion && this.isCurrentSeason){
+                if(this.currChampion.season == this.currentSeasonName && table[0].name != this.currChampion.user){
                     this.celebrateNewChampion(table[0].name);
                 }
-                this.currChampion = table[0].name;
+                this.currChampion.season = this.currentSeasonName;
+                this.currChampion.name = table[0].name;
             });
         },
         randomInRange: function(min, max) {
