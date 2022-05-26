@@ -1,17 +1,13 @@
 package com.cisbox.quarkus.rest;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -23,24 +19,25 @@ import com.cisbox.quarkus.entity.User;
 import com.cisbox.quarkus.service.ScoreboardService;
 import com.google.gson.Gson;
 
+@Consumes(MediaType.WILDCARD)
 @Path("/scoreboard")
 public class ScoreboardRest {
 
-    @Inject 
-    private ScoreboardService scoreboardService;
+    @Inject
+    ScoreboardService scoreboardService;
 
-    @Inject 
-    private CsvEntityPersister entityPersister;
+    @Inject
+    CsvEntityPersister entityPersister;
 
     Gson gson = new Gson();
 
     /**
-     * neue Saison anlegen
+     * Create new Season
      * 
-     * @param name name of season
-     * @param startDate start date of the season (format YYYY-MM-DD)
-     * @param endDate end sate of the season (format YYYY-MM-DD)
-     * @return HTTP 200 for success
+     * @param name Name of the Season
+     * @param startDate Start-Date of the Season (format YYYY-MM-DD)
+     * @param endDate End-Date of the Season (format YYYY-MM-DD)
+     * @return An HTTP Response
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,7 +58,7 @@ public class ScoreboardRest {
     }
 
     /**
-     * get season list
+     * Get Season List
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -71,7 +68,7 @@ public class ScoreboardRest {
     }
     
     /**
-     * get season info
+     * Get Season Info
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -83,7 +80,7 @@ public class ScoreboardRest {
 
         Optional<Season> seasonObj = scoreboardService.getSeason(season);
         
-        if(!seasonObj.isPresent()){
+        if(seasonObj.isEmpty()){
             return Response.status(404).build();
         } else {
             return Response.ok(gson.toJson(seasonObj)).build();
@@ -91,7 +88,7 @@ public class ScoreboardRest {
     }
 
     /**
-     * get table for season
+     * Get Table for Season
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -109,7 +106,7 @@ public class ScoreboardRest {
     }
 
     /**
-     * get gamelist for season
+     * Get Game List for a Season
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -132,7 +129,7 @@ public class ScoreboardRest {
     }
 
     /**
-     * get gamelist for season
+     * Get Game List for a Season
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -141,14 +138,12 @@ public class ScoreboardRest {
         List<Game> gameList = entityPersister.readGames();
 
         return Response.ok(
-                gson.toJson(
-                    gameList
-                )
+                gson.toJson(gameList)
             ).build();
     }
 
     /**
-     * get userlist
+     * Get UserList
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -157,7 +152,7 @@ public class ScoreboardRest {
         return Response.ok(
             gson.toJson(
                 entityPersister.readUsers().stream()
-                .sorted((user1, user2) -> user1.getName().compareTo(user2.getName()))
+                .sorted(Comparator.comparing(User::getName))
                 .collect(Collectors.toList())
             )
         ).build();
@@ -186,13 +181,14 @@ public class ScoreboardRest {
     }
 
     /**
-     * create game
-     * @param season
-     * @param user1
-     * @param user2
-     * @param score1
-     * @param score2
-     * @return
+     * Adds a 1v1 Game to an existing Season
+     *
+     * @param season The Season to add the Game to
+     * @param team1User1 User playing as Team 1
+     * @param team2User1 User playing as Team 2
+     * @param score1 Score of Team 1
+     * @param score2 Score of Team 2
+     * @return A HTTP Response
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -223,13 +219,16 @@ public class ScoreboardRest {
     }
 
     /**
-     * create game
-     * @param season
-     * @param user1
-     * @param user2
-     * @param score1
-     * @param score2
-     * @return
+     * Adds a 2v2 Game to an existing Season
+     *
+     * @param season The Sason to add the Game to
+     * @param team1User1 First User playing in Team 1
+     * @param team1User2 Second User playing in Team 2
+     * @param team2User1 First User playing in Team 2
+     * @param team2User2 Second User playing in Team 2
+     * @param score1 Score of Team 1
+     * @param score2 Score of Team 2
+     * @return A HTTP Response
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)

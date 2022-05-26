@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TableEntry implements Comparable<TableEntry> {
     private String name = "";
-    private Long gameCount = 0l;
-    private Long points = 0l;
-    private Long goalsScored = 0l;
-    private Long goalsReceived = 0l;
+    private Long gameCount = 0L;
+    private Long points = 0L;
+    private Long goalsScored = 0L;
+    private Long goalsReceived = 0L;
     private Float weightedScore = 0.0f;
 
     public TableEntry(String name){

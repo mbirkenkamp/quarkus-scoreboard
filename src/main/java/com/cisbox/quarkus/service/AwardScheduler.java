@@ -1,27 +1,21 @@
 package com.cisbox.quarkus.service;
 
-import java.util.Comparator;
+import com.cisbox.quarkus.dao.CsvEntityPersister;
+import com.cisbox.quarkus.entity.User;
+import io.quarkus.scheduler.Scheduled;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import com.cisbox.quarkus.dao.CsvEntityPersister;
-import com.cisbox.quarkus.entity.User;
-
-import io.quarkus.scheduler.Scheduled;
-
 @ApplicationScoped 
 public class AwardScheduler {
 
-    @Inject 
-    private ScoreboardService scoreboardService;
-
-    @Inject 
-    private CsvEntityPersister entityPersister;
+    @Inject
+    CsvEntityPersister entityPersister;
 
     @Scheduled(cron="0 0 1 * * ?")     
     void awardChampions() {
@@ -29,9 +23,9 @@ public class AwardScheduler {
         Map<String, Integer> winMap = new HashMap<>();
         Map<String, Integer> goalMap = new HashMap<>();
 
-        entityPersister.readGames().stream()
+        entityPersister.readGames()
         .forEach(currGame -> 
-            currGame.getWinners().stream().forEach(currWinner -> {
+            currGame.getWinners().forEach(currWinner -> {
                 if(currWinner == null || currWinner.isBlank()){
                     return;
                 }
@@ -47,8 +41,8 @@ public class AwardScheduler {
             )
         );
         
-        String winner = winMap.entrySet().stream().max(Comparator.comparing(Entry::getValue)).get().getKey();
-        String topScorer = goalMap.entrySet().stream().max(Comparator.comparing(Entry::getValue)).get().getKey();
+        String winner = winMap.entrySet().stream().max(Entry.comparingByValue()).get().getKey();
+        String topScorer = goalMap.entrySet().stream().max(Entry.comparingByValue()).get().getKey();
 
         for(User user : userList){
             user.setMostWins(user.getName().equals(winner));

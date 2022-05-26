@@ -34,10 +34,10 @@ import lombok.Getter;
 @Named("EntityPersister")
 public class CsvEntityPersister implements EntityPersister{ 
     private static final String DATA_DIRECTORY_VAR = "scoreboard.data.directory";  
-    @Getter private String userFilePath = null;
-    @Getter private String seasonFilePath = null;
-    @Getter private String gameFilePath = null;
-    @Getter private String departmentFilePath = null;
+    @Getter private final String userFilePath;
+    @Getter private final String seasonFilePath;
+    @Getter private final String gameFilePath;
+    @Getter private final String departmentFilePath;
 
     private CsvEntityPersister(){
         userFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/user.csv";
