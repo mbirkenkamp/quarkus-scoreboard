@@ -1,23 +1,21 @@
 package com.cisbox.quarkus.rest;
 
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.cisbox.quarkus.dao.CsvEntityPersister;
+import com.cisbox.quarkus.entity.Game;
+import com.cisbox.quarkus.entity.Season;
+import com.cisbox.quarkus.entity.User;
+import com.cisbox.quarkus.service.ScoreboardService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import com.cisbox.quarkus.dao.CsvEntityPersister;
-import com.cisbox.quarkus.entity.Game;
-import com.cisbox.quarkus.entity.Season;
-import com.cisbox.quarkus.entity.User;
-import com.cisbox.quarkus.service.ScoreboardService;
-import com.google.gson.Gson;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Consumes(MediaType.WILDCARD)
 @Path("/scoreboard")
@@ -28,8 +26,6 @@ public class ScoreboardRest {
 
     @Inject
     CsvEntityPersister entityPersister;
-
-    Gson gson = new Gson();
 
     /**
      * Create new Season
@@ -50,7 +46,7 @@ public class ScoreboardRest {
             Season season = new Season(name, LocalDate.parse(startDate), LocalDate.parse(endDate), icon, teamSize);
             seasonList.add(season);
             if(entityPersister.writeSeasons(seasonList) == 0) {
-                return Response.ok(gson.toJson(season)).build();
+                return Response.ok(season).build();
             } else {
                 return Response.serverError().build();
             }
@@ -64,7 +60,7 @@ public class ScoreboardRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/season")
     public Response getSeasonList() {
-        return Response.ok(gson.toJson(entityPersister.readSeasons())).build();
+        return Response.ok(entityPersister.readSeasons()).build();
     }
     
     /**
@@ -83,7 +79,7 @@ public class ScoreboardRest {
         if(seasonObj.isEmpty()){
             return Response.status(404).build();
         } else {
-            return Response.ok(gson.toJson(seasonObj)).build();
+            return Response.ok(seasonObj).build();
         }
     }
 
@@ -98,11 +94,7 @@ public class ScoreboardRest {
             return Response.status(Status.NOT_FOUND).build();
         }
 
-        return Response.ok(
-            gson.toJson(
-                scoreboardService.getSeasonTable(season)
-            )
-        ).build();
+        return Response.ok(scoreboardService.getSeasonTable(season)).build();
     }
 
     /**
@@ -118,13 +110,11 @@ public class ScoreboardRest {
 
         List<Game> gameList = entityPersister.readGames();
         return Response.ok(
-            gson.toJson(
                 gameList.stream()
-                .filter(currGame -> currGame.getSeasonName().equals(season))
-                .collect(
-                    Collectors.toList()
-                )
-            )
+                        .filter(currGame -> currGame.getSeasonName().equals(season))
+                        .collect(
+                                Collectors.toList()
+                        )
         ).build();
     }
 
@@ -137,9 +127,7 @@ public class ScoreboardRest {
     public Response getGamelist() {
         List<Game> gameList = entityPersister.readGames();
 
-        return Response.ok(
-                gson.toJson(gameList)
-            ).build();
+        return Response.ok(gameList).build();
     }
 
     /**
@@ -150,11 +138,9 @@ public class ScoreboardRest {
     @Path("/user")
     public Response getUserlist() {
         return Response.ok(
-            gson.toJson(
                 entityPersister.readUsers().stream()
-                .sorted(Comparator.comparing(User::getName))
-                .collect(Collectors.toList())
-            )
+                        .sorted(Comparator.comparing(User::getName))
+                        .collect(Collectors.toList())
         ).build();
     }
 
@@ -173,7 +159,7 @@ public class ScoreboardRest {
         } else {
             userList.add(user);
             if(entityPersister.writeUsers(userList) == 0) {
-                return Response.ok(gson.toJson(user)).build();
+                return Response.ok(user).build();
             } else {
                 return Response.serverError().build();
             }
@@ -212,7 +198,7 @@ public class ScoreboardRest {
         
         gameList.add(game);
         if(entityPersister.writeGames(gameList) == 0) {
-            return Response.ok(gson.toJson(game)).build();
+            return Response.ok(game).build();
         } else {
             return Response.serverError().build();
         }
@@ -221,7 +207,7 @@ public class ScoreboardRest {
     /**
      * Adds a 2v2 Game to an existing Season
      *
-     * @param season The Sason to add the Game to
+     * @param season The Season to add the Game to
      * @param team1User1 First User playing in Team 1
      * @param team1User2 Second User playing in Team 2
      * @param team2User1 First User playing in Team 2
@@ -254,7 +240,7 @@ public class ScoreboardRest {
         
         gameList.add(game);
         if(entityPersister.writeGames(gameList) == 0) {
-            return Response.ok(gson.toJson(game)).build();
+            return Response.ok(game).build();
         } else {
             return Response.serverError().build();
         }
