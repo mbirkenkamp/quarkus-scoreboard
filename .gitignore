@@ -37,4 +37,4 @@ nb-configuration.xml
 
 # Local environment
 .env
-/src/main/jib/data/
+src/main/jib/data/
