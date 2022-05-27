@@ -24,14 +24,15 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 @RegisterForReflection
 @Named("ScoreboardService")
 public class ScoreboardService {
-    @Inject 
-    private CsvEntityPersister entityPersister;
+
+    @Inject
+    CsvEntityPersister entityPersister;
 
     public List<TableEntry> getSeasonTable(String season) {
         List<Game> gameList = entityPersister.readGames();
         Map<String, TableEntry> sortedMap = new HashMap<>();
         
-        entityPersister.readUsers().stream().forEach(currUser -> sortedMap.put(currUser.getName(), new TableEntry(currUser.getName())));
+        entityPersister.readUsers().forEach(currUser -> sortedMap.put(currUser.getName(), new TableEntry(currUser.getName())));
 
         for(Game currGame : gameList) {
             if(currGame.getSeasonName().equals(season)){

@@ -1,5 +1,17 @@
 "use strict";
 
+function getYear(dateString) {
+    return dateString.substring(0, 4);
+}
+
+function getMonth(dateString) {
+    return dateString.substring(5, 7);
+}
+
+function getDay(dateString) {
+    return dateString.substring(8, dateString.length);
+}
+
 var app = Vue.createApp({
     data() {
         return {
@@ -46,11 +58,13 @@ var app = Vue.createApp({
     },
     computed: {
         isCurrentSeason: function(){
+            console.log(this.currentSeason);
+            console.log(this.currentSeason.startDate);
             if(this.currentSeason === null){
                 return false;
             } else {
-                let startDate = new Date(this.currentSeason.startDate.year, this.currentSeason.startDate.month-1, this.currentSeason.startDate.day);
-                let endDate = new Date(this.currentSeason.endDate.year, this.currentSeason.endDate.month-1, this.currentSeason.endDate.day);
+                let startDate = new Date(getYear(this.currentSeason.startDate), getMonth(this.currentSeason.startDate) - 1, getDay(this.currentSeason.startDate));
+                let endDate = new Date(getYear(this.currentSeason.endDate), getMonth(this.currentSeason.endDate) - 1, getDay(this.currentSeason.endDate));
                 return new Date() >= startDate && new Date() <= endDate;
             }            
         },
@@ -99,8 +113,8 @@ var app = Vue.createApp({
             let currDate = new Date();
             let currentSeasons = this.seasons.filter(
                                     currSeason => 
-                                        currDate >= new Date(currSeason.startDate.year, currSeason.startDate.month-1, currSeason.startDate.day) 
-                                        && currDate <= new Date(currSeason.endDate.year, currSeason.endDate.month-1, currSeason.endDate.day)
+                                        currDate >= new Date(getYear(currSeason.startDate), getMonth(currSeason.startDate) - 1, getDay(currSeason.startDate))
+                                        && currDate <= new Date(getYear(currSeason.endDate), getMonth(currSeason.endDate) - 1, getDay(currSeason.endDate))
                                 );
 
             if(currentSeasons.length > 0){

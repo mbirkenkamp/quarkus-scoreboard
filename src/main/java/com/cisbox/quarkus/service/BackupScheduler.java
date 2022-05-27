@@ -18,8 +18,9 @@ import java.nio.file.Path;
 
 @ApplicationScoped 
 public class BackupScheduler {
-    @Inject 
-    private CsvEntityPersister entityPersister;
+
+    @Inject
+    CsvEntityPersister entityPersister;
 
     @Inject
     Mailer mailer;  
