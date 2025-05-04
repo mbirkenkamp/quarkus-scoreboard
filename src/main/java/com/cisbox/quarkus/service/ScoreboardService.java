@@ -7,18 +7,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cisbox.quarkus.dao.CsvEntityPersister;
 import com.cisbox.quarkus.dto.TableEntry;
 import com.cisbox.quarkus.entity.Game;
 import com.cisbox.quarkus.entity.Season;
 
-import org.apache.commons.lang3.StringUtils;
-
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @ApplicationScoped
 @RegisterForReflection

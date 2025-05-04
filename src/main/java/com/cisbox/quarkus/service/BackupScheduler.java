@@ -3,8 +3,8 @@ package com.cisbox.quarkus.service;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import com.cisbox.quarkus.dao.CsvEntityPersister;
 

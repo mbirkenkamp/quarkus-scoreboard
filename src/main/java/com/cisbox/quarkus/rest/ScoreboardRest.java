@@ -6,11 +6,11 @@ import com.cisbox.quarkus.entity.Season;
 import com.cisbox.quarkus.entity.User;
 import com.cisbox.quarkus.service.ScoreboardService;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;

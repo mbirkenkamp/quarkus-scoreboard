@@ -4,8 +4,8 @@ import com.cisbox.quarkus.dao.CsvEntityPersister;
 import com.cisbox.quarkus.entity.User;
 import io.quarkus.scheduler.Scheduled;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

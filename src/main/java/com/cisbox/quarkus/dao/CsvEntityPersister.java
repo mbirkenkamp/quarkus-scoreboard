@@ -1,5 +1,6 @@
 package com.cisbox.quarkus.dao;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -9,8 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import com.cisbox.quarkus.entity.Department;
 import com.cisbox.quarkus.entity.Game;
@@ -22,11 +22,11 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
-import org.eclipse.microprofile.config.ConfigProvider;
-
 import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 import lombok.Getter;
 
 @ApplicationScoped
@@ -40,6 +40,7 @@ public class CsvEntityPersister implements EntityPersister{
     @Getter private final String departmentFilePath;
 
     private CsvEntityPersister(){
+        System.out.println(new File(".").getAbsolutePath());
         userFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/user.csv";
         seasonFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/season.csv";
         gameFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/game.csv";
