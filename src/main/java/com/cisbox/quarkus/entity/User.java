@@ -9,10 +9,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {    
-    @CsvBindByName private String name;
-    @CsvBindByName private boolean mostWins = false;
-    @CsvBindByName private boolean mostGoals = false;
+public class User {
+
+    @CsvBindByName
+    private String name;
+    @CsvBindByName
+    private boolean mostWins = false;
+    @CsvBindByName
+    private boolean mostGoals = false;
 
     public User(String name) {
         this.name = name;

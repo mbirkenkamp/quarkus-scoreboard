@@ -3,6 +3,7 @@ package com.cisbox.quarkus.service;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import io.quarkus.logging.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -36,7 +37,7 @@ public class BackupScheduler {
                     .addAttachment("season.csv",Files.readAllBytes(Path.of(entityPersister.getSeasonFilePath())), "text/plain")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error(e);
         }
     }
 }
