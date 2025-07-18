@@ -13,7 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Season {
-    @CsvBindByName private String name;
+
+    @CsvBindByName
+    private String name;
     
     @CsvBindByName
     @CsvDate(value = "yyyy-MM-dd")

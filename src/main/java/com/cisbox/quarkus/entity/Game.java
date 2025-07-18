@@ -15,18 +15,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Game {
-    @CsvBindByName private String seasonName;
+
+    @CsvBindByName
+    private String seasonName;
 
     @CsvBindByName
     @CsvDate(value = "yyyy-MM-dd")
     private LocalDate date;
 
-    @CsvBindByName private String team1User1;
-    @CsvBindByName private String team1User2;
-    @CsvBindByName private String team2User1;
-    @CsvBindByName private String team2User2;
-    @CsvBindByName private int team1Score;
-    @CsvBindByName private int team2Score;
+    @CsvBindByName
+    private String team1User1;
+    @CsvBindByName
+    private String team1User2;
+    @CsvBindByName
+    private String team2User1;
+    @CsvBindByName
+    private String team2User2;
+    @CsvBindByName
+    private int team1Score;
+    @CsvBindByName
+    private int team2Score;
 
     public Game(String seasonName, String team1User1, String team2User1, Integer team1Score, Integer team2Score) {
         this.seasonName = seasonName;

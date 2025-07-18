@@ -24,6 +24,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheResult;
+import io.quarkus.logging.*;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
@@ -33,11 +34,16 @@ import lombok.Getter;
 @RegisterForReflection
 @Named("EntityPersister")
 public class CsvEntityPersister implements EntityPersister{ 
-    private static final String DATA_DIRECTORY_VAR = "scoreboard.data.directory";  
-    @Getter private final String userFilePath;
-    @Getter private final String seasonFilePath;
-    @Getter private final String gameFilePath;
-    @Getter private final String departmentFilePath;
+    private static final String DATA_DIRECTORY_VAR = "scoreboard.data.directory";
+
+    @Getter
+    private final String userFilePath;
+    @Getter
+    private final String seasonFilePath;
+    @Getter
+    private final String gameFilePath;
+    @Getter
+    private final String departmentFilePath;
 
     private CsvEntityPersister(){
         System.out.println(new File(".").getAbsolutePath());
@@ -52,7 +58,7 @@ public class CsvEntityPersister implements EntityPersister{
         try {
             return new CsvToBeanBuilder<User>(new FileReader(userFilePath)).withType(User.class).build().parse();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.error(e);
             return new ArrayList<>();
         }
     }
@@ -75,7 +81,7 @@ public class CsvEntityPersister implements EntityPersister{
         try {
                 return new CsvToBeanBuilder<Season>(new FileReader(seasonFilePath)).withType(Season.class).build().parse();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.error(e);
             return new ArrayList<>();
         }
     }
@@ -99,7 +105,7 @@ public class CsvEntityPersister implements EntityPersister{
         try {
             return new CsvToBeanBuilder<Game>(new FileReader(gameFilePath)).withType(Game.class).build().parse();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.error(e);
             return new ArrayList<>();
         }
     }
@@ -123,7 +129,7 @@ public class CsvEntityPersister implements EntityPersister{
         try {
             return new CsvToBeanBuilder<Department>(new FileReader(gameFilePath)).withType(Department.class).build().parse();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.error(e);
             return new ArrayList<>();
         }
     }
