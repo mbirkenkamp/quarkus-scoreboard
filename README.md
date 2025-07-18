@@ -11,3 +11,8 @@ Thanks:
 - canvas-confetti (https://github.com/catdad/canvas-confetti)
 - Font Awesome (https://fontawesome.com)
 - Bulma - Prefers Dark (https://github.com/jloh/bulma-prefers-dark)
+
+Use this command to deploy the Docker Container:
+```shell
+docker run -d -p 8080:8091 --name quarkus-scoreboard ghcr.io/mbirkenkamp/quarkus-scoreboard:latest
+```
