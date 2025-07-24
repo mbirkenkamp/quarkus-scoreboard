@@ -35,6 +35,9 @@ public class BackupScheduler {
                     .addAttachment("user.csv",Files.readAllBytes(Path.of(entityPersister.getUserFilePath())), "text/plain")
                     .addAttachment("game.csv",Files.readAllBytes(Path.of(entityPersister.getGameFilePath())), "text/plain")
                     .addAttachment("season.csv",Files.readAllBytes(Path.of(entityPersister.getSeasonFilePath())), "text/plain")
+                    .addAttachment("boardgame.csv",Files.readAllBytes(Path.of(entityPersister.getBoardgameFilePath())), "text/plain")
+                    .addAttachment("boardgame-session.csv",Files.readAllBytes(Path.of(entityPersister.getBoardgameSessionFilePath())), "text/plain")
+                    .addAttachment("boardgame-session-participant.csv",Files.readAllBytes(Path.of(entityPersister.getBoardgameSessionParticipantFilePath())), "text/plain")
             );
         } catch (IOException e) {
             Log.error(e);

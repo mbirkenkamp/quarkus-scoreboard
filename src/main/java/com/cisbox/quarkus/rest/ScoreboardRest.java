@@ -1,21 +1,21 @@
 package com.cisbox.quarkus.rest;
 
 import com.cisbox.quarkus.dao.CsvEntityPersister;
-import com.cisbox.quarkus.entity.Game;
-import com.cisbox.quarkus.entity.Season;
-import com.cisbox.quarkus.entity.User;
+import com.cisbox.quarkus.dto.*;
+import com.cisbox.quarkus.entity.*;
 import com.cisbox.quarkus.service.ScoreboardService;
 
+import io.quarkus.logging.*;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.*;
 
 @Consumes(MediaType.WILDCARD)
 @Path("/scoreboard")
@@ -244,5 +244,104 @@ public class ScoreboardRest {
         } else {
             return Response.serverError().build();
         }
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/boardgame")
+    public Response createBoardgame(
+            @QueryParam("name") String name
+    ) {
+        if (StringUtils.isBlank(name)) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        List<Boardgame> boardgames = entityPersister.readBoardgames();
+        if (boardgames.stream().anyMatch(bg ->  bg.getName().equals(name))) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        Boardgame newGame = new Boardgame(name);
+        boardgames.add(newGame);
+        if (entityPersister.writeBoardgames(boardgames)) {
+            return Response.ok(newGame).build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/boardgames")
+    public Response getBoardgames() {
+        return Response.ok(entityPersister.readBoardgames()).build();
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/boardgame/{gameId}/session")
+    public Response createNewSession(@PathParam("gameId") String gameId, BoardgameSessionDTO dto) {
+        if (StringUtils.isBlank(gameId)) {
+            return Response.status(Status.BAD_REQUEST.getStatusCode(), "No GameID provided").build();
+        }
+
+        UUID gameUuid;
+        try {
+            gameUuid = UUID.fromString(gameId);
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST.getStatusCode(), "Invalid GameID format").build();
+        }
+
+        if (entityPersister.readBoardgames().stream().noneMatch(bg -> bg.getId().equals(gameUuid))) {
+            return Response.status(Status.BAD_REQUEST.getStatusCode(), "GameID does not exist").build();
+        }
+
+        var givenNames = dto.participants().stream()
+                .map(BoardgameSessionDTO.ParticipantDTO::name)
+                .collect(Collectors.toCollection(HashSet::new));
+        var existingNames = entityPersister.readUsers().stream()
+                .map(User::getName)
+                .collect(Collectors.toCollection(HashSet::new));
+        if (!existingNames.containsAll(givenNames)) {
+            return Response.status(Status.BAD_REQUEST.getStatusCode(), "Bad Request: User does not exist").build();
+        }
+
+        int winnerOrLoserCount = 0;
+
+        BoardgameSession session = new BoardgameSession(gameUuid, dto.date());
+        List<BoardgameSessionParticipant> participants = new LinkedList<>();
+
+        for (var part : dto.participants()) {
+            BoardgameSessionParticipant entity = new BoardgameSessionParticipant();
+            entity.setSessionId(session.getId());
+            entity.setPlayerName(part.name());
+            entity.setHasWon(part.hasWon());
+            entity.setHasLost(part.hasLost());
+            if (part.hasWon() || part.hasLost()) {
+                winnerOrLoserCount++;
+            }
+            participants.add(entity);
+        }
+
+        if (winnerOrLoserCount == 0) {
+            return Response.status(Status.BAD_REQUEST.getStatusCode(), "Bad Request: No Winners or Losers set").build();
+        }
+        Log.infof("Saving Boardgame Session: %s", dto);
+
+        var fileSessions = entityPersister.readBoardgameSessions();
+        fileSessions.add(session);
+
+        boolean success = entityPersister.writeBoardgameSessions(fileSessions);
+        if (!success) {
+            return Response.serverError().build();
+        }
+
+        var fileParticipants = entityPersister.readBoardgameSessionParticipants();
+        fileParticipants.addAll(participants);
+
+        success = entityPersister.writeBoardgameSessionParticipants(fileParticipants);
+        if (success) {
+            return Response.ok().build();
+        }
+        return Response.serverError().build();
     }
 }
