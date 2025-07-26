@@ -275,34 +275,82 @@ public class ScoreboardRest {
         return Response.ok(entityPersister.readBoardgames()).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/boardgames/sessions")
+    public Response getBoardgameSessions(
+            @QueryParam("boardgameId") String boardgameId,
+            @QueryParam("maxResults") int maxResults
+    ) {
+        Map<UUID, Boardgame> boardgames = entityPersister.readBoardgames().stream()
+                .collect(Collectors.toMap(Boardgame::getId, b -> b));
+        List<BoardgameSession> sessions = entityPersister.readBoardgameSessions().stream()
+                .sorted((s1, s2) -> -1 * s1.getDate().compareTo(s2.getDate()))
+                .toList();
+        Map<UUID, List<BoardgameSessionParticipant>>  participants = entityPersister.readBoardgameSessionParticipants()
+                .stream().collect(Collectors.groupingBy(BoardgameSessionParticipant::getSessionId));
+
+        UUID boardgameIdFilter = null;
+        if (StringUtils.isNotBlank(boardgameId)) {
+            try {
+                boardgameIdFilter = UUID.fromString(boardgameId);
+            } catch (IllegalArgumentException e) {
+                return Response.status(Status.BAD_REQUEST).entity("Bad Request: Invalid UUID Format").build();
+            }
+        }
+
+        int count = 0;
+        List<BoardgameTableEntry> results = new LinkedList<>();
+        for (BoardgameSession session : sessions) {
+            if (boardgameIdFilter != null && !session.getBoardgameId().equals(boardgameIdFilter)) {
+                continue;
+            }
+
+            results.add(new BoardgameTableEntry(
+                    boardgames.get(session.getBoardgameId()),
+                    session.getDate(),
+                    participants.get(session.getId())
+                            .stream()
+                            .map(BoardgameParticipantDTO::fromEntity)
+                            .toList()
+            ));
+
+            count++;
+            if (maxResults > 0 && count >= maxResults) {
+                break;
+            }
+        }
+        return Response.ok(results).build();
+    }
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/boardgame/{gameId}/session")
     public Response createNewSession(@PathParam("gameId") String gameId, BoardgameSessionDTO dto) {
         if (StringUtils.isBlank(gameId)) {
-            return Response.status(Status.BAD_REQUEST.getStatusCode(), "No GameID provided").build();
+            return Response.status(Status.BAD_REQUEST).entity("No GameID provided").build();
         }
 
         UUID gameUuid;
         try {
             gameUuid = UUID.fromString(gameId);
         } catch (IllegalArgumentException e) {
-            return Response.status(Status.BAD_REQUEST.getStatusCode(), "Invalid GameID format").build();
+            return Response.status(Status.BAD_REQUEST).entity("Invalid GameID format").build();
         }
 
         if (entityPersister.readBoardgames().stream().noneMatch(bg -> bg.getId().equals(gameUuid))) {
-            return Response.status(Status.BAD_REQUEST.getStatusCode(), "GameID does not exist").build();
+            return Response.status(Status.BAD_REQUEST).entity("GameID does not exist").build();
         }
 
         var givenNames = dto.participants().stream()
-                .map(BoardgameSessionDTO.ParticipantDTO::name)
+                .map(BoardgameParticipantDTO::name)
                 .collect(Collectors.toCollection(HashSet::new));
         var existingNames = entityPersister.readUsers().stream()
                 .map(User::getName)
                 .collect(Collectors.toCollection(HashSet::new));
         if (!existingNames.containsAll(givenNames)) {
-            return Response.status(Status.BAD_REQUEST.getStatusCode(), "Bad Request: User does not exist").build();
+            return Response.status(Status.BAD_REQUEST).entity("Bad Request: User does not exist").build();
         }
 
         int winnerOrLoserCount = 0;
@@ -323,7 +371,7 @@ public class ScoreboardRest {
         }
 
         if (winnerOrLoserCount == 0) {
-            return Response.status(Status.BAD_REQUEST.getStatusCode(), "Bad Request: No Winners or Losers set").build();
+            return Response.status(Status.BAD_REQUEST).entity("Bad Request: No Winners or Losers set").build();
         }
         Log.infof("Saving Boardgame Session: %s", dto);
 

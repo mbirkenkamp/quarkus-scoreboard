@@ -12,7 +12,7 @@ function getDay(dateString) {
     return dateString.substring(8, dateString.length);
 }
 
-const app = Vue.createApp({
+const foosball = Vue.createApp({
     data() {
         return {
             seasons: [],
@@ -55,6 +55,15 @@ const app = Vue.createApp({
     created: function () {
         this.loadSeasons();
         this.loadUsers();
+
+        let savedMode = localStorage.getItem('darkmode');
+        if (savedMode === 'on') {
+            document.querySelector("#darkmode").disabled = "";
+            this.ui.colorScheme = "fa-sun";
+        } else {
+            document.querySelector("#darkmode").disabled = "disabled";
+            this.ui.colorScheme = "fa-moon";
+        }
     },
     computed: {
         isCurrentSeason: function () {
@@ -133,15 +142,7 @@ const app = Vue.createApp({
             this.loadTable();
             this.loadGames();
         },
-        loadUsers: function () {
-            fetch('/scoreboard/user')
-                .then(response => response.json())
-                .then(users => {
-                    this.users = users;
-
-
-                });
-        },
+        loadUsers: loadUsers,
         loadGames: function () {
             if (this.currentSeasonName === "") {
                 return;
@@ -235,41 +236,7 @@ const app = Vue.createApp({
                 });
 
         },
-        addUser: function () {
-            if (this.newUsername === "") {
-                notie.alert({
-                    type: 'error',
-                    text: 'Spielername ist leer!'
-                });
-                return;
-            }
-
-            const options = {
-                method: 'POST'
-            }
-
-            fetch('/scoreboard/user/' + encodeURI(this.newUsername), options)
-                .then(response => {
-                    if (response.status === 200) {
-                        this.loadUsers();
-                        this.newUserPanelOpen = false;
-                        notie.alert({
-                            type: 'success',
-                            text: 'Spieler angelegt!'
-                        });
-                    } else if (response.status === 409) {
-                        notie.alert({
-                            type: 'error',
-                            text: 'Spieler existiert schon!'
-                        });
-                    } else {
-                        notie.alert({
-                            type: 'error',
-                            text: 'Spieler konnte nicht angelegt werden!'
-                        });
-                    }
-                })
-        },
+        addUser: addUser,
         addSeason: function () {
             if (this.newSeasonName == null) {
                 notie.alert({
@@ -377,14 +344,17 @@ const app = Vue.createApp({
             if (this.ui.colorScheme === "fa-moon") {
                 document.querySelector("#darkmode").disabled = "";
                 this.ui.colorScheme = "fa-sun";
+                localStorage.setItem('darkmode', 'on');
             } else {
                 document.querySelector("#darkmode").disabled = "disabled";
                 this.ui.colorScheme = "fa-moon";
+                localStorage.setItem('darkmode', 'off');
             }
         }
+
     }
 });
-app.component('game-highlight', {
+foosball.component('game-highlight', {
     props: ['season','team1user1','team1user2','team2user1','team2user2'],    
     emits: ['team1-goal','team2-goal','game-finished'], 
     data() {
@@ -425,13 +395,13 @@ app.component('game-highlight', {
     methods: {
         addTeam1Goal: function() {
             this.team1score += 1;
-            if(this.team1score == 9) {
+            if(this.team1score === 9) {
                 this.celebrateChampion();
             }
         },
         addTeam2Goal: function() {
             this.team2score += 1;
-            if(this.team2score == 9) {
+            if(this.team2score === 9) {
                 this.celebrateChampion();
             }
         },
@@ -442,4 +412,4 @@ app.component('game-highlight', {
     }
 });
 
-app.mount("#app");
+foosball.mount("#app");
