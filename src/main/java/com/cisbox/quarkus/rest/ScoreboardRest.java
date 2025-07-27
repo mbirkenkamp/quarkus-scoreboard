@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.time.LocalDate;
+import java.time.format.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -280,7 +281,7 @@ public class ScoreboardRest {
     @Path("/boardgames/sessions")
     public Response getBoardgameSessions(
             @QueryParam("boardgameId") String boardgameId,
-            @QueryParam("maxResults") int maxResults
+            @QueryParam("date-from") String dateFrom
     ) {
         Map<UUID, Boardgame> boardgames = entityPersister.readBoardgames().stream()
                 .collect(Collectors.toMap(Boardgame::getId, b -> b));
@@ -299,10 +300,21 @@ public class ScoreboardRest {
             }
         }
 
-        int count = 0;
+        LocalDate dateFromFilter = null;
+        if (StringUtils.isNotBlank(dateFrom)) {
+            try {
+                dateFromFilter = LocalDate.parse(dateFrom);
+            } catch (DateTimeParseException e) {
+                return Response.status(Status.BAD_REQUEST).entity("Bad Request: Invalid Date Format").build();
+            }
+        }
+
         List<BoardgameTableEntry> results = new LinkedList<>();
         for (BoardgameSession session : sessions) {
             if (boardgameIdFilter != null && !session.getBoardgameId().equals(boardgameIdFilter)) {
+                continue;
+            }
+            if (dateFromFilter != null && session.getDate().isBefore(dateFromFilter)) {
                 continue;
             }
 
@@ -314,11 +326,6 @@ public class ScoreboardRest {
                             .map(BoardgameParticipantDTO::fromEntity)
                             .toList()
             ));
-
-            count++;
-            if (maxResults > 0 && count >= maxResults) {
-                break;
-            }
         }
         return Response.ok(results).build();
     }

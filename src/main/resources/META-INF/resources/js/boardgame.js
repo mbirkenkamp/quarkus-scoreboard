@@ -25,7 +25,10 @@ const boardgame = Vue.createApp({
             newUsername: "",
 
             tableEntries: [],
+            filterDateFrom: '',
+            filterBoardgameId: '',
 
+            newSessionPanelOpen: false,
             newSessionBoardgameId: "",
             newSessionParticipants: [],
 
@@ -37,8 +40,11 @@ const boardgame = Vue.createApp({
     created: function () {
         this.loadBoardGames();
         this.loadUsers();
-        this.expandNewSessionParticipants();
+
+        this.resetFilter();
         this.loadGameSessions();
+
+        this.expandNewSessionParticipants();
 
         let savedMode = localStorage.getItem('darkmode');
         if (savedMode === 'on') {
@@ -91,8 +97,9 @@ const boardgame = Vue.createApp({
                     this.boardgames = games;
                 });
         },
-        loadGameSessions: function (maxResults) {
-            fetch('/scoreboard/boardgames/sessions?maxResults=' + (maxResults ?? 25))
+        loadGameSessions: function () {
+            fetch('/scoreboard/boardgames/sessions'
+                + `?boardgameId=${this.filterBoardgameId}&date-from=${this.filterDateFrom}`)
                 .then(response => response.json())
                 .then(games => {
                     this.tableEntries = games;
@@ -181,7 +188,6 @@ const boardgame = Vue.createApp({
                 .then(response => {
                     if (response.ok) {
                         notie.alert({ type: 'success', text: 'Session gespeichert!' });
-                        this.newSessionBoardgameId = '';
                         this.newSessionParticipants = [];
                         this.loadGameSessions();
                     } else {
@@ -207,8 +213,14 @@ const boardgame = Vue.createApp({
                 .map(p => p.name);
 
             return this.users.filter(u => !selectedNames.includes(u.name));
-        }
+        },
+        resetFilter: function() {
+            this.filterBoardgameId = '';
 
+            const today = new Date();
+            const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+            this.filterDateFrom = oneMonthAgo.toISOString().substring(0, 10);
+        }
     }
 });
 

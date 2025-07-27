@@ -154,60 +154,38 @@
 
               <div class="tile is-child is-vertical">
                 <article class="tile is-child notification">
-                  <h1 class="title px-auto">Neues Spiel</h1>
-                  <div style="margin-bottom: 1em;">
-                    <label for="newSessionBoardgameSelect" style="margin-right: 10px">Wähle ein Spiel aus: </label>
-                    <div class="select">
-                      <select id="newSessionBoardgameSelect" v-model="newSessionBoardgameId">
-                        <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
-                      </select>
-                    </div>
-                  </div>
-                  <table style="width: 100%" v-if="newSessionBoardgameId !== ''">
-                    <tr v-for="(participant, index) of newSessionParticipants"
-                        :key="index"
-                        :class="{ 'placeholder-highlight': participant.name === '' }">
-                      <td>
-                          <div class="select" style="margin: 5px;">
-                            <select v-model="participant.name" @change="expandNewSessionParticipants()">
-                              <option v-for="user of getUnchosenUsersForNewSessionParticipants(participant)">{{ user.name }}</option>
-                            </select>
-                          </div>
-                      </td>
-                      <td style="vertical-align: middle;">
-                        <label class="checkbox">
-                          Gewonnen
-                          <input type="checkbox"
-                                 v-model="participant.hasWon"
-                                 class="checkbox-large"
-                                 :disabled="participant.name === ''">
-                        </label>
-                      </td>
-                      <td style="vertical-align: middle;">
-                        <label>
-                          Verloren
-                          <input type="checkbox"
-                                 v-model="participant.hasLost"
-                                 class="checkbox-large"
-                                 :disabled="participant.name === ''">
-                        </label>
-                      </td>
-                      <td style="vertical-align: middle; max-width: 25px;">
-                        <button class="button"
-                                @click="newSessionParticipants.splice(index, 1)"
-                                :disabled="participant.name === ''">
-                          <i class="fas fa-minus"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </table>
-                  <button class="button is-primary"
-                          @click="addGameSession()"
-                          :disabled="newSessionParticipants.length < 3">
-                    Spielsitzung speichern
-                  </button>
+                  <button class="button is-primary" @click="newSessionPanelOpen = true">Neues Spiel anlegen</button>
                 </article>
 
+                <article class="tile is-child notification">
+                  <h1 class="title px-auto">Filter</h1>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <label for="boardgameFilterSelect" style="margin-right: 10px">Spiel: </label>
+                        </td>
+                        <td>
+                          <div class="select">
+                            <select id="boardgameFilterSelect" v-model="filterBoardgameId" @change="loadGameSessions()">
+                              <option value="">Alle</option>
+                              <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
+                            </select>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <label for="dateFromFilter" style="margin-right: 10px">Seit: </label>
+                        </td>
+                        <td>
+                          <input id="dateFromFilter" type="date" class="input"
+                                 v-model="filterDateFrom" @change="loadGameSessions()">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </article>
 
                 <article class="tile is-child notification">
                   <h1 class="title px-auto">Spieler Scores</h1>
@@ -295,6 +273,71 @@
               </section>
               <footer class="modal-card-foot">
                 <button class="button is-primary" @click="addBoardgame();">Speichern</button>
+              </footer>
+            </div>
+          </div>
+
+          <div class="modal" :class="{ 'is-active': newSessionPanelOpen }">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">Neues Spiel anlegen</p>
+                <button class="delete" aria-label="close" @click="newSessionPanelOpen = false"></button>
+              </header>
+              <section class="modal-card-body">
+                <div style="margin-bottom: 1em;">
+                  <label for="newSessionBoardgameSelect" style="margin-right: 10px">Wähle ein Spiel aus: </label>
+                  <div class="select">
+                    <select id="newSessionBoardgameSelect" v-model="newSessionBoardgameId">
+                      <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
+                    </select>
+                  </div>
+                </div>
+                <table style="width: 100%">
+                  <tr v-for="(participant, index) of newSessionParticipants"
+                      :key="index"
+                      :class="{ 'placeholder-highlight': participant.name === '' }">
+                    <td>
+                      <div class="select" style="margin: 5px;">
+                        <select v-model="participant.name" @change="expandNewSessionParticipants()">
+                          <option v-for="user of getUnchosenUsersForNewSessionParticipants(participant)">{{ user.name }}</option>
+                        </select>
+                      </div>
+                    </td>
+                    <td style="vertical-align: middle;">
+                      <label class="checkbox">
+                        Gewonnen
+                        <input type="checkbox"
+                               v-model="participant.hasWon"
+                               class="checkbox-large"
+                               :disabled="participant.name === ''">
+                      </label>
+                    </td>
+                    <td style="vertical-align: middle;">
+                      <label>
+                        Verloren
+                        <input type="checkbox"
+                               v-model="participant.hasLost"
+                               class="checkbox-large"
+                               :disabled="participant.name === ''">
+                      </label>
+                    </td>
+                    <td style="vertical-align: middle; max-width: 25px;">
+                      <button class="button"
+                              @click="newSessionParticipants.splice(index, 1)"
+                              :disabled="participant.name === ''">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button is-primary"
+                        @click="addGameSession()"
+                        :disabled="newSessionParticipants.length < 3">
+                  Spielsitzung speichern
+                </button>
               </footer>
             </div>
           </div>
