@@ -1,351 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>cisball</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" />
-        <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
-        <link rel="stylesheet" type="text/css" href="/css/dark.css" id="darkmode" disabled="disabled">
-        <script src="https://unpkg.com/notie"></script>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>scorebox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" />
 
-        <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
-        <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">
-        <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
-        <link rel="icon" type="image/png" sizes="192x192"  href="/icon/android-icon-192x192.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
-        <link rel="manifest" href="/manifest.json">
-        <meta name="msapplication-TileColor" content="#ffffff">
-        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-        <meta name="theme-color" content="#ffffff">
-        
-        <style>
-            .notie-fullscreen {
-                display:table-cell; 
-                height: 90vh; 
-                vertical-align: middle; 
-                text-align: center;
-            }            
-            .notie-container {
-                z-index: 41;
-            }
-            .notification {
-                background-color: unset;
-            }
-            .fontawesome-select .fa{
-                font-family: "Font Awesome 5 Free", Open Sans;
-                font-weight: 700;
-                font-size: 24px;
-            }
-            [v-cloak] {
-                display: none;
-            }
-            .text-ellipsis {
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-            }
-            .w-80 {
-                width: 80%;
-            }
-            #colorswitch {
-                position: absolute;
-                top: 20px;
-                right: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="app">
-            <i id="colorswitch" class="fas" :class="ui.colorScheme" @click="toggleColor()"></i>
-            <div v-cloak>
-                <nav class="navbar is-fixed-bottom is-dark">
-                    <div class="navbar-menu">                    
-                        <div class="navbar-end">
-                            <a class="navbar-item">
-                                <button class="button is-primary" title="Spieler hinzufügen" @click="newUserPanelOpen=true">
-                                    <i class="fas fa-fw fa-user-plus"></i>
-                                </button>
-                            </a>                
-                            <a class="navbar-item">
-                                <button class="button is-primary" title="Saison hinzufügen" @click="newSeasonPanelOpen=true">
-                                    <i class="fas fa-fw fa-calendar-plus"></i>
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </nav>
+    <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
 
-                <section class="section">
-                    <div class="container">
-                        <div class="tile is-parent">
-                            <div class="tile is-child">
-                                <article class="tile is-child notification">                 
-                                    <span class="title is-1" id="seasonContainer">
-                                        <i class="fas" :class="currentSeason.icon" v-if="currSeason != null"></i>
-                                        <i class="fas fa-trophy fa-fw"></i>                                
-                                    </span>
-                                    <div class="select is-large">
-                                        <select id="seasonList" @change="changeSeason();" v-model="currentSeasonName" >
-                                            <option v-for="season of seasons" >{{ season.name }}</option>
-                                        </select>
-                                    </div>
-                                    <table id="resultTable" class="table is-striped is-hoverable" aria-label="Tabelle der Saison">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Pos.</th>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Spiele</th>
-                                                <th scope="col">Torverhältnis</th>
-                                                <th scope="col">Punkte</th>
-                                                <th scope="col">Gewinnquote</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="resultTableBody">
-                                            <tr v-for="(tableRow, index) of tableEntries">
-                                                <td class="has-text-right">{{ index + 1 }}</td>
-                                                <td class="text-ellipsis" @mouseover="hoverTableEntry($event)" @mouseleave="hoverTableEntry()">{{ tableRow.name }} <i class="fas fa-crown has-text-warning" v-if="tableRow.name == getTopWinner"></i><i class="fas fa-futbol has-text-warning" v-if="tableRow.name == getTopScorer"></i></td>
-                                                <td class="has-text-centered">{{ tableRow.gameCount }}</td>                                            
-                                                <td class="has-text-centered">{{ tableRow.goalsScored }}:{{ tableRow.goalsReceived }}</td>
-                                                <td class="has-text-centered">{{ tableRow.points }}</td>
-                                                <td class="has-text-centered">{{ tableRow.weightedScore }}%</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </article>  
-                            </div>
+    <style>
+        body {
+            background-image: linear-gradient(135deg, #004000 0%, #7fff7f 40%, #004000 100%);
+            width: 100vw;
+            height: 100vh;
+        }
 
-                            <div class="tile is-child is-vertical" >
-                                <article class="tile is-child notification" v-if="isCurrentSeason">
-                                    <h1 class="title px-auto">Neues Spiel</h1>
-                                    <div class="columns is-centered">
-                                        <div class="column is-half">
-                                            <div class="select is-pulled-right">
-                                                <select id="team1User1" data-source="users" v-model="team1User1">
-                                                    <option v-for="user of users" >{{ user.name }}</option>                     
-                                                </select>
-                                            </div>
-                                            <br v-if="currentSeason.teamSize==2" />
-                                            <div class="select is-pulled-right" v-if="currentSeason.teamSize==2">
-                                                <select id="team1User1" data-source="users" v-model="team1User2" >
-                                                    <option v-for="user of users" >{{ user.name }}</option>                     
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="column is-half">
-                                            <div class="select">
-                                                <select id="team2User1" data-source="users" v-model="team2User1">
-                                                    <option v-for="user of users" >{{ user.name }}</option>                     
-                                                </select>
-                                            </div>
-                                            <br v-if="currentSeason.teamSize==2" />
-                                            <div class="select" v-if="currentSeason.teamSize==2">
-                                                <select id="team2User1" data-source="users" v-model="team2User2">
-                                                    <option v-for="user of users" >{{ user.name }}</option>                     
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="control columns is-centered">
-                                        <div class="column is-one-quarter"></div>
-                                        <div class="select">
-                                            <select id="team1Score" v-model="team1Score">    
-                                                <option value="9">9</option>
-                                                <option value="8">8</option>
-                                                <option value="7">7</option>
-                                                <option value="6">6</option>
-                                                <option value="5">5</option>
-                                                <option value="4">4</option>
-                                                <option value="3">3</option>
-                                                <option value="2">2</option>
-                                                <option value="1">1</option>
-                                                <option value="0">0</option>
-                                            </select>
-                                        </div>                                                                     
-                                        &nbsp;&nbsp;:&nbsp;&nbsp;
-                                        <div class="select">
-                                            <select id="team2Score" v-model="team2Score">    
-                                                <option value="9">9</option>
-                                                <option value="8">8</option>
-                                                <option value="7">7</option>
-                                                <option value="6">6</option>
-                                                <option value="5">5</option>
-                                                <option value="4">4</option>
-                                                <option value="3">3</option>
-                                                <option value="2">2</option>
-                                                <option value="1">1</option>
-                                                <option value="0">0</option>
-                                            </select>
-                                        </div> 
-                                        <button @click="openGamePanel = true"><i class="fas fa-arrows-alt"></i></button>                                      
-                                        <div class="column is-one-quarter py-0"><button class="button is-primary is-pulled-right mr-3" @click="addMatch()"><i class="fas fa-save"></i></button></div>
-                                    </div>                               
-                                </article>
+        .centered-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
 
+        .module-link {
+            border-style: dashed;
+            border-radius: 25px;
+            width: 40vw;
+            height: 25vw;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
 
-                                <article class="tile is-child notification">
-                                    <h1 class="title px-auto">Spiele</h1>
-                                    <div class="is-full" >
-                                        <ol v-for="game of getReversedGameList">
-                                            <ul class="columns">
-                                                <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.team1Score>game.team2Score}">{{game.team1User1}}<br v-if="currentSeason.teamSize==2" />{{game.team1User2}}</span>
-                                                <span class="column is-one-third text-ellipsis" :class="{'has-text-weight-bold': game.team1Score<game.team2Score}">{{game.team2User1}}<br v-if="currentSeason.teamSize==2" />{{game.team2User2}}</span>
-                                                <span class="column is-one-third">({{game.team1Score}}:{{game.team2Score}})</span>
-                                            </ul>
-                                        </ol>
-                                    </div>                  
-                                </article>
-                            </div>
-                        </div>
-                    </div>
+        .module-link:hover {
+            color: lightgray;
+            animation: ease-in-out 1s;
+        }
 
-                    <div class="modal" :class="{ 'is-active': newUserPanelOpen }">
-                        <div class="modal-background"></div>
-                        <div class="modal-card">
-                            <header class="modal-card-head">
-                                <p class="modal-card-title">Spieler anlegen</p>
-                                <button class="delete" aria-label="close" @click="newUserPanelOpen=false;"></button>
-                            </header>
-                            <section class="modal-card-body">
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">Username</label>
-                                    </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <div class="control">
-                                                <input class="input column is-half" type="text" id="newUser" v-model="newUsername" />  
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>                         
-                            </section>
-                            <footer class="modal-card-foot">
-                                <button class="button is-primary" @click="addUser();">speichern</button>
-                            </footer>
-                        </div>
-                    </div>
+        .module-link i {
+            font-size: 8em;
+        }
 
-                    <div class="modal" :class="{ 'is-active': openGamePanel }">
-                        <div class="modal-background"></div>
-                        <div class="modal-card w-80">
-                            <header class="modal-card-head">
-                                <p class="modal-card-title">Spiel</p>
-                                <button class="delete" aria-label="close" @click="openGamePanel=false;"></button>
-                            </header>
-                            <section class="modal-card-body">  
-                                <game-highlight v-bind:season="currentSeasonName" v-bind:team1user1="team1User1" v-bind:team2user1="team2User1" v-bind:team1user2="team1User2" v-bind:team2user2="team2User2" @game-finished="addDetailedMatch"></game-highlight>
-                            </section>
-                        </div>
-                    </div>
+        .module-link:hover i {
+            font-size: 9em;
+        }
 
-                    <div class="modal" :class="{ 'is-active': newSeasonPanelOpen }">
-                        <div class="modal-background"></div>
-                        <div class="modal-card">
-                            <header class="modal-card-head">
-                                <p class="modal-card-title">Saison anlegen</p>
-                                <button class="delete" aria-label="close" @click="newSeasonPanelOpen=false;"></button>
-                            </header>
-                            <section class="modal-card-body">
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">Name</label>
-                                    </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <div class="control">
-                                                <input class="input column is-half" type="text" id="newSeasonName" v-model="newSeasonName">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">Typ</label>
-                                    </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <div class="select">
-                                                <select class="" id="newSeasonType" v-model="newSeasonType">
-                                                    <option value="1">Tabelle</option>
-                                                    <option value="2">Turnier</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">Teamgröße</label>
-                                    </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <div class="select">
-                                                <select class="" id="newSeasonTeamSize" v-model="newSeasonTeamSize">
-                                                    <option value="1">Einzel</option>
-                                                    <option value="2">Doppel</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">icon</label>
-                                    </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <div class="select">
-                                                <select class="fontawesome-select fa" id="newSeasonIcon" v-model="newSeasonIcon">
-                                                    <option class="fa" value="fa-futbol">&#xf1e3;</option>
-                                                    <option class="fa" value="fa-quidditch">&#xf458;</option>
-                                                    <option class="fa" value="fa-bullseye">&#xf140;</option>
-                                                    <option class="fa" value="fa-table-tennis">&#xf45d;</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">Anfang</label>
-                                    </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <input class="input column is-half" type="date" id="newSeasonStart" v-model="newSeasonStart" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">Ende</label>
-                                    </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <input class="input column is-half" type="date" id="newSeasonEnd" v-model="newSeasonEnd" />
-                                        </div>
-                                    </div>
-                                </div>                           
-                            </section>
-                            <footer class="modal-card-foot">
-                            <button class="button is-primary" @click="addSeason();">speichern</button>
-                            </footer>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
-        <script src="./js/App.js"></script>
-    </body>
+        .module-link span {
+            font-size: xx-large;
+        }
+
+        .module-link:hover span {
+            font-size: xxx-large;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="centered-container">
+      <a class="module-link" href="/foosball.html">
+        <i class="fas fa-futbol"></i>
+        <span>
+          Tischkicker
+        </span>
+      </a>
+      <a class="module-link" href="/boardgame.html">
+        <i class="fas fa-chess-board"></i>
+        <span>
+          Brett- & Kartenspiele
+        </span>
+      </a>
+    </div>
+  </body>
 </html>

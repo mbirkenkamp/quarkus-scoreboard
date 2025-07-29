@@ -12,10 +12,7 @@ import java.util.List;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 
-import com.cisbox.quarkus.entity.Department;
-import com.cisbox.quarkus.entity.Game;
-import com.cisbox.quarkus.entity.Season;
-import com.cisbox.quarkus.entity.User;
+import com.cisbox.quarkus.entity.*;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -44,13 +41,22 @@ public class CsvEntityPersister implements EntityPersister{
     private final String gameFilePath;
     @Getter
     private final String departmentFilePath;
+    @Getter
+    private final String boardgameFilePath;
+    @Getter
+    private final String boardgameSessionFilePath;
+    @Getter
+    private final String boardgameSessionParticipantFilePath;
 
     private CsvEntityPersister(){
-        System.out.println(new File(".").getAbsolutePath());
+        Log.infof("Using Storage Path: %s", new File(".").getAbsolutePath());
         userFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/user.csv";
         seasonFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/season.csv";
         gameFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/game.csv";
         departmentFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/department.csv";
+        boardgameFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/boardgame.csv";
+        boardgameSessionFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/boardgame-session.csv";
+        boardgameSessionParticipantFilePath = ConfigProvider.getConfig().getValue(DATA_DIRECTORY_VAR, String.class) + "/boardgame-session-participant.csv";
     }
 
     @CacheResult(cacheName = "user-cache")
@@ -146,5 +152,83 @@ public class CsvEntityPersister implements EntityPersister{
             return 1;
         }
         return 0;
+    }
+
+    @CacheResult(cacheName = "boardgame-cache")
+    @Override
+    public List<Boardgame> readBoardgames() {
+        try {
+            return new CsvToBeanBuilder<Boardgame>(new FileReader(boardgameFilePath))
+                    .withType(Boardgame.class).build().parse();
+        } catch (FileNotFoundException e) {
+            Log.error(e);
+            return new ArrayList<>();
+        }
+    }
+
+    @CacheInvalidateAll(cacheName = "boardgame-cache")
+    @Override
+    public boolean writeBoardgames(List<Boardgame> boardgameList) {
+        try {
+            Writer writer = new FileWriter(boardgameFilePath);
+            StatefulBeanToCsv<Boardgame> beanToCsv = new StatefulBeanToCsvBuilder<Boardgame>(writer).build();
+            beanToCsv.write(boardgameList);
+            writer.close();
+        } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @CacheResult(cacheName = "boardgame-session-cache")
+    @Override
+    public List<BoardgameSession> readBoardgameSessions() {
+        try {
+            return new CsvToBeanBuilder<BoardgameSession>(new FileReader(boardgameSessionFilePath))
+                    .withType(BoardgameSession.class).build().parse();
+        } catch (FileNotFoundException e) {
+            Log.error(e);
+            return new ArrayList<>();
+        }
+    }
+
+    @CacheInvalidateAll(cacheName = "boardgame-session-cache")
+    @Override
+    public boolean writeBoardgameSessions(List<BoardgameSession> boardgameSessionList) {
+        try {
+            Writer writer = new FileWriter(boardgameSessionFilePath);
+            StatefulBeanToCsv<BoardgameSession> beanToCsv = new StatefulBeanToCsvBuilder<BoardgameSession>(writer).build();
+            beanToCsv.write(boardgameSessionList);
+            writer.close();
+        } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @CacheResult(cacheName = "boardgame-session-participant-cache")
+    @Override
+    public List<BoardgameSessionParticipant> readBoardgameSessionParticipants() {
+        try {
+            return new CsvToBeanBuilder<BoardgameSessionParticipant>(new FileReader(boardgameSessionParticipantFilePath))
+                    .withType(BoardgameSessionParticipant.class).build().parse();
+        } catch (FileNotFoundException e) {
+            Log.error(e);
+            return new ArrayList<>();
+        }
+    }
+
+    @CacheInvalidateAll(cacheName = "boardgame-session-participant-cache")
+    @Override
+    public boolean writeBoardgameSessionParticipants(List<BoardgameSessionParticipant> boardgameSessionParticipantList) {
+        try {
+            Writer writer = new FileWriter(boardgameSessionParticipantFilePath);
+            StatefulBeanToCsv<BoardgameSessionParticipant> beanToCsv = new StatefulBeanToCsvBuilder<BoardgameSessionParticipant>(writer).build();
+            beanToCsv.write(boardgameSessionParticipantList);
+            writer.close();
+        } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            return false;
+        }
+        return true;
     }
 }

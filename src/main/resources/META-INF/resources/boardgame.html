@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>scorebox</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/dark.css" id="darkmode" disabled="disabled">
+    <script src="https://unpkg.com/notie"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <style>
+        .notie-fullscreen {
+            display:table-cell;
+            height: 90vh;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .notie-container {
+            z-index: 41;
+        }
+        .notification {
+            background-color: unset;
+        }
+        .fontawesome-select .fa{
+            font-family: "Font Awesome 5 Free", Open Sans;
+            font-weight: 700;
+            font-size: 24px;
+        }
+        [v-cloak] {
+            display: none;
+        }
+        .text-ellipsis {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .w-80 {
+            width: 80%;
+        }
+        #colorswitch {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+        }
+        .checkbox-large {
+            transform: scale(1.5);
+            margin: 0.5em;
+        }
+        .placeholder-highlight {
+            background-color: rgba(69, 69, 68, 0.2);
+            font-style: italic;
+            color: inherit;
+        }
+        .invisible {
+            visibility: hidden;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <i id="colorswitch" class="fas" :class="ui.colorScheme" @click="toggleColor()"></i>
+      <div v-cloak>
+        <nav class="navbar is-fixed-bottom is-dark">
+          <div class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item" href="/">
+                <button class="button is-primary" title="Zurück zur Spielauswahl">
+                  <i class="fas fa-fw fa-home"></i>
+                  Zurück zur Spielauswahl
+                </button>
+              </a>
+            </div>
+            <div class="navbar-end">
+              <a class="navbar-item">
+                <button class="button is-primary" title="Spieler hinzufügen" @click="newUserPanelOpen=true">
+                  <i class="fas fa-fw fa-user-plus"></i>
+                </button>
+              </a>
+              <a class="navbar-item">
+                <button class="button is-primary" title="Boardgame hinzufügen" @click="newBoardgamePanelOpen=true">
+                  <i class="fas fa-fw fa-calendar-plus"></i>
+                </button>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <section class="section">
+          <div class="container">
+            <div class="tile is-parent">
+              <div class="tile is-child">
+                <article class="tile is-child notification">
+                  <span class="title is-1">
+                    <i class="fas fa-chess-board fa-fw"></i>
+                    Boardgame Tracking
+                  </span>
+                  <table class="table is-striped" style="margin-top: 1.5em;">
+                    <thead>
+                      <tr>
+                        <th scope="col">Pos.</th>
+                        <th scope="col">Spiel</th>
+                        <th scope="col">Datum</th>
+                        <th scope="col">Spieler</th>
+                        <th scope="col">Gewinner</th>
+                        <th scope="col">Verlierer</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(tableRow, index) of tableEntries">
+                        <td class="has-text-right">{{ index + 1 }}</td>
+                        <td class="has-text-right">{{ tableRow.boardgame.name }}</td>
+                        <td class="text-ellipsis">{{ tableRow.date }}</td>
+                        <td class="has-text-centered">
+                          <p v-for="participant of tableRow.participants">
+                            {{ participant.name }}
+                          </p>
+                        </td>
+                        <td class="has-text-centered">
+                          <p v-for="participant of tableRow.participants">
+                            <i class="fas fa-trophy" :class="{'invisible': !participant.hasWon}"></i>
+                          </p>
+                        </td>
+                        <td class="has-text-centered">
+                          <p v-for="participant of tableRow.participants">
+                            <i class="fas fa-skull" :class="{'invisible': !participant.hasLost}"></i>
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </article>
+              </div>
+
+              <div class="tile is-child is-vertical">
+                <article class="tile is-child notification">
+                  <button class="button is-primary" @click="newSessionPanelOpen = true">Neues Spiel anlegen</button>
+                </article>
+
+                <article class="tile is-child notification">
+                  <h1 class="title px-auto">Filter</h1>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <label for="boardgameFilterSelect" style="margin-right: 10px">Spiel: </label>
+                        </td>
+                        <td>
+                          <div class="select">
+                            <select id="boardgameFilterSelect" v-model="filterBoardgameId" @change="loadGameSessions()">
+                              <option value="">Alle</option>
+                              <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
+                            </select>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <label for="dateFromFilter" style="margin-right: 10px">Seit: </label>
+                        </td>
+                        <td>
+                          <input id="dateFromFilter" type="date" class="input"
+                                 v-model="filterDateFrom" @change="loadGameSessions()">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </article>
+
+                <article class="tile is-child notification">
+                  <h1 class="title px-auto">Spieler Scores</h1>
+                  <div class="is-full">
+                    <table class="table is-striped">
+                      <thead>
+                        <tr>
+                          <th>Spieler</th>
+                          <th>
+                            Wins/Loses
+                          </th>
+                          <th>
+                            Win-Loss-Score
+                            <i class="fas fa-info-circle" title="+1 je Win, -1 je Loss"></i>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="score in getParticipantScores" :key="score.name">
+                          <td>
+                            {{ score.name }}
+                          </td>
+                          <td>
+                            {{ score.wins }}/{{ score.losses }}
+                          </td>
+                          <td>
+                            {{ score.score }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal" :class="{ 'is-active': newUserPanelOpen }">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">Spieler anlegen</p>
+                <button class="delete" aria-label="close" @click="newUserPanelOpen=false;"></button>
+              </header>
+              <section class="modal-card-body">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Username</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input column is-half" type="text" id="newUser" v-model="newUsername" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button is-primary" @click="addUser();">speichern</button>
+              </footer>
+            </div>
+          </div>
+
+          <div class="modal" :class="{ 'is-active': newBoardgamePanelOpen }">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">Boardgame anlegen</p>
+                <button class="delete" aria-label="close" @click="newBoardgamePanelOpen=false;"></button>
+              </header>
+              <section class="modal-card-body">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Name des Spiels</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input column is-half" type="text" id="newBoardgameName" v-model="newBoardgameName" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button is-primary" @click="addBoardgame();">Speichern</button>
+              </footer>
+            </div>
+          </div>
+
+          <div class="modal" :class="{ 'is-active': newSessionPanelOpen }">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">Neues Spiel anlegen</p>
+                <button class="delete" aria-label="close" @click="newSessionPanelOpen = false"></button>
+              </header>
+              <section class="modal-card-body">
+                <div style="margin-bottom: 1em;">
+                  <label for="newSessionBoardgameSelect" style="margin-right: 10px">Wähle ein Spiel aus: </label>
+                  <div class="select">
+                    <select id="newSessionBoardgameSelect" v-model="newSessionBoardgameId">
+                      <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
+                    </select>
+                  </div>
+                </div>
+                <table style="width: 100%">
+                  <tr v-for="(participant, index) of newSessionParticipants"
+                      :key="index"
+                      :class="{ 'placeholder-highlight': participant.name === '' }">
+                    <td>
+                      <div class="select" style="margin: 5px;">
+                        <select v-model="participant.name" @change="expandNewSessionParticipants()">
+                          <option v-for="user of getUnchosenUsersForNewSessionParticipants(participant)">{{ user.name }}</option>
+                        </select>
+                      </div>
+                    </td>
+                    <td style="vertical-align: middle;">
+                      <label class="checkbox">
+                        Gewonnen
+                        <input type="checkbox"
+                               v-model="participant.hasWon"
+                               class="checkbox-large"
+                               :disabled="participant.name === ''">
+                      </label>
+                    </td>
+                    <td style="vertical-align: middle;">
+                      <label>
+                        Verloren
+                        <input type="checkbox"
+                               v-model="participant.hasLost"
+                               class="checkbox-large"
+                               :disabled="participant.name === ''">
+                      </label>
+                    </td>
+                    <td style="vertical-align: middle; max-width: 25px;">
+                      <button class="button"
+                              @click="newSessionParticipants.splice(index, 1)"
+                              :disabled="participant.name === ''">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button is-primary"
+                        @click="addGameSession()"
+                        :disabled="newSessionParticipants.length < 3">
+                  Spielsitzung speichern
+                </button>
+              </footer>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/boardgame.js"></script>
+  </body>
+</html>
