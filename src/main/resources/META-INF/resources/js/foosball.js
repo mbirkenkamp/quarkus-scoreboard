@@ -395,18 +395,17 @@ foosball.component('game-highlight', {
     methods: {
         addTeam1Goal: function() {
             this.team1score += 1;
-            if(this.team1score === 9) {
+            if(this.team1score === 10) {
                 this.celebrateChampion();
             }
         },
         addTeam2Goal: function() {
             this.team2score += 1;
-            if(this.team2score === 9) {
+            if(this.team2score === 10) {
                 this.celebrateChampion();
             }
         },
         celebrateChampion: function() {
-            console.log("GOIL!!!! " + this.getWinner);
             this.$emit('game-finished', this.season, this.team1user1, this.team1user2, this.team2user1, this.team2user2, this.team1score, this.team2score);
         }
     }
