@@ -123,7 +123,11 @@
                     <tbody id="resultTableBody">
                     <tr v-for="(tableRow, index) of tableEntries">
                       <td class="has-text-right">{{ index + 1 }}</td>
-                      <td class="text-ellipsis" @mouseover="hoverTableEntry($event)" @mouseleave="hoverTableEntry()">{{ tableRow.name }} <i class="fas fa-crown has-text-warning" v-if="tableRow.name == getTopWinner"></i><i class="fas fa-futbol has-text-warning" v-if="tableRow.name == getTopScorer"></i></td>
+                      <td class="text-ellipsis" @mouseover="hoverTableEntry($event)" @mouseleave="hoverTableEntry()">
+                        {{ tableRow.name }}
+                        <i class="fas fa-crown has-text-warning" v-if="tableRow.name == getTopWinner" title="Top Winner (Most Wins"></i>
+                        <i class="fas fa-futbol has-text-warning" v-if="tableRow.name == getTopScorer" title="Top Scorer (Most Goals)"></i>
+                      </td>
                       <td class="has-text-centered">{{ tableRow.gameCount }}</td>
                       <td class="has-text-centered">{{ tableRow.goalsScored }}:{{ tableRow.goalsReceived }}</td>
                       <td class="has-text-centered">{{ tableRow.points }}</td>

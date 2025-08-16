@@ -20,12 +20,14 @@ const boardgame = Vue.createApp({
 
             newBoardgamePanelOpen: false,
             newBoardgameName: "",
+            newBoardgameDescription: "",
 
             newUserPanelOpen: false,
             newUsername: "",
 
             tableEntries: [],
             filterDateFrom: '',
+            filterDateUntil: '',
             filterBoardgameId: '',
 
             newSessionPanelOpen: false,
@@ -80,6 +82,12 @@ const boardgame = Vue.createApp({
                 }
             }
             return Object.values(scores).sort((a, b) => b.score - a.score);
+        },
+        selectedBoardgame() {
+            return this.boardgames.find(b => String(b.id) === String(this.newSessionBoardgameId));
+        },
+        selectedBoardgameDescription() {
+            return this.selectedBoardgame?.description || "";
         }
     },
     methods: {
@@ -99,7 +107,7 @@ const boardgame = Vue.createApp({
         },
         loadGameSessions: function () {
             fetch('/scoreboard/boardgames/sessions'
-                + `?boardgameId=${this.filterBoardgameId}&date-from=${this.filterDateFrom}`)
+                + `?boardgameId=${this.filterBoardgameId}&date-from=${this.filterDateFrom}&date-until=${this.filterDateUntil}`)
                 .then(response => response.json())
                 .then(games => {
                     this.tableEntries = games;
@@ -107,37 +115,29 @@ const boardgame = Vue.createApp({
         },
         addUser: addUser,
         addBoardgame: function () {
-            if (this.newBoardgameName === "") {
-                notie.alert({
-                    type: 'error',
-                    text: 'Boardgamename ist leer!'
-                });
+            if (this.newBoardgameName.trim() === "") {
+                notie.alert({ type: 'error', text: 'Boardgamename ist leer!' });
                 return;
             }
 
-            const options = {
-                method: 'POST'
+            const params = new URLSearchParams();
+            params.set('name', this.newBoardgameName.trim());
+            if (this.newBoardgameDescription && this.newBoardgameDescription.trim() !== "") {
+                params.set('description', this.newBoardgameDescription.trim());
             }
 
-            fetch('/scoreboard/boardgame?name=' + encodeURI(this.newBoardgameName), options)
+            fetch('/scoreboard/boardgame?' + params.toString(), { method: 'POST' })
                 .then(response => {
                     if (response.status === 200) {
                         this.loadBoardGames();
                         this.newBoardgamePanelOpen = false;
-                        notie.alert({
-                            type: 'success',
-                            text: 'Boardgame angelegt!'
-                        });
+                        this.newBoardgameName = "";
+                        this.newBoardgameDescription = "";
+                        notie.alert({ type: 'success', text: 'Boardgame angelegt!' });
                     } else if (response.status === 409) {
-                        notie.alert({
-                            type: 'error',
-                            text: 'Boardgame existiert schon!'
-                        });
+                        notie.alert({ type: 'error', text: 'Boardgame existiert schon!' });
                     } else {
-                        notie.alert({
-                            type: 'error',
-                            text: 'Boardgame konnte nicht angelegt werden!'
-                        });
+                        notie.alert({ type: 'error', text: 'Boardgame konnte nicht angelegt werden!' });
                     }
                 })
         },
@@ -180,15 +180,19 @@ const boardgame = Vue.createApp({
 
             fetch('/scoreboard/boardgame/' + encodeURIComponent(this.newSessionBoardgameId) + '/session', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dto)
             })
                 .then(response => {
                     if (response.ok) {
                         notie.alert({ type: 'success', text: 'Session gespeichert!' });
-                        this.newSessionParticipants = [];
+                        this.newSessionParticipants.forEach(p => {
+                            if (p.name !== '') {
+                                p.hasWon = false;
+                                p.hasLost = false;
+                            }
+                        });
+                        this.expandNewSessionParticipants();
                         this.loadGameSessions();
                     } else {
                         return response.text().then(text => {
@@ -220,6 +224,12 @@ const boardgame = Vue.createApp({
             const today = new Date();
             const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
             this.filterDateFrom = oneMonthAgo.toISOString().substring(0, 10);
+            this.filterDateUntil = today.toISOString().substring(0, 10);
+        },
+        resetNewSessionForm: function() {
+            this.newSessionBoardgameId = "";
+            this.newSessionParticipants = [];
+            this.expandNewSessionParticipants();
         }
     }
 });
