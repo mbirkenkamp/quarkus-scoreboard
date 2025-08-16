@@ -188,7 +188,13 @@ const boardgame = Vue.createApp({
                 .then(response => {
                     if (response.ok) {
                         notie.alert({ type: 'success', text: 'Session gespeichert!' });
-                        this.newSessionParticipants = [];
+                        this.newSessionParticipants.forEach(p => {
+                            if (p.name !== '') {
+                                p.hasWon = false;
+                                p.hasLost = false;
+                            }
+                        });
+                        this.expandNewSessionParticipants();
                         this.loadGameSessions();
                     } else {
                         return response.text().then(text => {
@@ -220,6 +226,11 @@ const boardgame = Vue.createApp({
             const today = new Date();
             const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
             this.filterDateFrom = oneMonthAgo.toISOString().substring(0, 10);
+        },
+        resetNewSessionForm: function() {
+            this.newSessionBoardgameId = "";
+            this.newSessionParticipants = [];
+            this.expandNewSessionParticipants();
         }
     }
 });

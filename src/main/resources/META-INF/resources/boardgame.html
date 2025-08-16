@@ -333,6 +333,7 @@
                 </table>
               </section>
               <footer class="modal-card-foot">
+                <button class="button" @click="resetNewSessionForm()">Formular zurücksetzen</button>
                 <button class="button is-primary"
                         @click="addGameSession()"
                         :disabled="newSessionParticipants.length < 3">
