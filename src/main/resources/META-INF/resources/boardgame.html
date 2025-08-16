@@ -270,6 +270,23 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Beschreibung</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-fullwidth">
+                      <div class="control">
+                        <textarea
+                          class="textarea"
+                          id="newBoardgameDescription"
+                          v-model="newBoardgameDescription"
+                          placeholder="Erkläre, wie Punkte eingetragen werden sollen"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </section>
               <footer class="modal-card-foot">
                 <button class="button is-primary" @click="addBoardgame();">Speichern</button>
@@ -293,6 +310,16 @@
                     </select>
                   </div>
                 </div>
+
+                <article class="message is-info" v-if="selectedBoardgameDescription">
+                  <div class="message-header">
+                    <p>Hinweise zur Punktevergabe</p>
+                  </div>
+                  <div class="message-body" style="white-space: pre-wrap;">
+                    {{ selectedBoardgameDescription }}
+                  </div>
+                </article>
+
                 <table style="width: 100%">
                   <tr v-for="(participant, index) of newSessionParticipants"
                       :key="index"
