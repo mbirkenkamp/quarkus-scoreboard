@@ -27,6 +27,7 @@ const boardgame = Vue.createApp({
 
             tableEntries: [],
             filterDateFrom: '',
+            filterDateUntil: '',
             filterBoardgameId: '',
 
             newSessionPanelOpen: false,
@@ -106,7 +107,7 @@ const boardgame = Vue.createApp({
         },
         loadGameSessions: function () {
             fetch('/scoreboard/boardgames/sessions'
-                + `?boardgameId=${this.filterBoardgameId}&date-from=${this.filterDateFrom}`)
+                + `?boardgameId=${this.filterBoardgameId}&date-from=${this.filterDateFrom}&date-until=${this.filterDateUntil}`)
                 .then(response => response.json())
                 .then(games => {
                     this.tableEntries = games;
@@ -223,6 +224,7 @@ const boardgame = Vue.createApp({
             const today = new Date();
             const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
             this.filterDateFrom = oneMonthAgo.toISOString().substring(0, 10);
+            this.filterDateUntil = today.toISOString().substring(0, 10);
         },
         resetNewSessionForm: function() {
             this.newSessionBoardgameId = "";

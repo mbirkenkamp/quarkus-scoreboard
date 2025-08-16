@@ -183,6 +183,15 @@
                                  v-model="filterDateFrom" @change="loadGameSessions()">
                         </td>
                       </tr>
+                      <tr>
+                        <td>
+                          <label for="dateUntilFilter" style="margin-right: 10px">Bis: </label>
+                        </td>
+                        <td>
+                          <input id="dateUntilFilter" type="date" class="input"
+                                 v-model="filterDateUntil" @change="loadGameSessions()">
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </article>
