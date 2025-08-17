@@ -43,7 +43,7 @@ const boardgame = Vue.createApp({
         this.loadBoardGames();
         this.loadUsers();
 
-        this.resetFilter();
+        this.setFilterTo('last30Days');
         this.loadGameSessions();
 
         this.expandNewSessionParticipants();
@@ -87,6 +87,9 @@ const boardgame = Vue.createApp({
             return this.boardgames.find(b => String(b.id) === String(this.newSessionBoardgameId));
         },
         selectedBoardgameDescription() {
+            return this.boardgames.find(b => b.id === this.filterBoardgameId)?.description || "";
+        },
+        selectedNewSessionBoardgameDescription() {
             return this.selectedBoardgame?.description || "";
         }
     },
@@ -218,18 +221,41 @@ const boardgame = Vue.createApp({
 
             return this.users.filter(u => !selectedNames.includes(u.name));
         },
-        resetFilter: function() {
-            this.filterBoardgameId = '';
-
-            const today = new Date();
-            const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-            this.filterDateFrom = oneMonthAgo.toISOString().substring(0, 10);
-            this.filterDateUntil = today.toISOString().substring(0, 10);
-        },
         resetNewSessionForm: function() {
             this.newSessionBoardgameId = "";
             this.newSessionParticipants = [];
             this.expandNewSessionParticipants();
+        },
+        setFilterTo: function(filter) {
+            const today = new Date();
+            switch (filter) {
+                case 'none':
+                    this.filterDateFrom = '';
+                    this.filterDateUntil = '';
+                    break;
+                case 'today':
+                    this.filterDateFrom = today.toISOString().substring(0, 10);
+                    this.filterDateUntil = today.toISOString().substring(0, 10);
+                    break;
+                case 'thisWeek':
+                    const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 2);
+                    const endOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 8);
+                    this.filterDateFrom = startOfWeek.toISOString().substring(0, 10);
+                    this.filterDateUntil = endOfWeek.toISOString().substring(0, 10);
+                    break;
+                case 'thisMonth':
+                    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    this.filterDateFrom = startOfMonth.toISOString().substring(0, 10);
+                    this.filterDateUntil = endOfMonth.toISOString().substring(0, 10);
+                    break;
+                case 'last30Days':
+                    const startOfLast30Days = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30);
+                    this.filterDateFrom = startOfLast30Days.toISOString().substring(0, 10);
+                    this.filterDateUntil = today.toISOString().substring(0, 10);
+                    break;
+            }
+            this.loadGameSessions();
         }
     }
 });
