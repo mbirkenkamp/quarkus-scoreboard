@@ -19,8 +19,11 @@ public class Boardgame implements Comparable<Boardgame> {
     @CsvBindByName
     private String name;
 
+    @CsvBindByName
+    private String description;
+
     public Boardgame(String name) {
-        this(UUID.randomUUID(), name);
+        this(UUID.randomUUID(), name, "");
     }
 
     @Override

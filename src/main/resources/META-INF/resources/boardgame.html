@@ -75,6 +75,34 @@
         .invisible {
             visibility: hidden;
         }
+        #filter-date-default-buttons > button:not(:first-child) {
+            margin-left: 0.5rem;
+        }
+
+        .participant-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.25rem 0;
+        }
+        .participant-name {
+            white-space: normal;
+            word-break: break-word;
+            flex: 1 1 auto;
+        }
+        .participant-icons {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex: 0 0 auto;
+        }
+        .participant-icons i {
+            width: 1.25em;
+            text-align: center;
+        }
+        .participant-icons .fa-trophy {
+            color: #d4af37;
+        }
     </style>
   </head>
   <body>
@@ -108,22 +136,31 @@
 
         <section class="section">
           <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-left: 2.25rem;">
+              <span class="title is-1">
+                <i class="fas fa-chess-board fa-fw"></i>
+                Boardgame Tracking
+              </span>
+              <span class="title is-4">
+                <div class="select" style="margin-right: 1rem;">
+                  <select id="boardgameFilterSelect" v-model="filterBoardgameId" @change="loadGameSessions()">
+                    <option value="">Alle Spiele</option>
+                    <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
+                  </select>
+                </div>
+                <button class="button title is-4" @click="newSessionPanelOpen = true">Neue Session eintragen</button>
+              </span>
+            </div>
             <div class="tile is-parent">
               <div class="tile is-child">
                 <article class="tile is-child notification">
-                  <span class="title is-1">
-                    <i class="fas fa-chess-board fa-fw"></i>
-                    Boardgame Tracking
-                  </span>
-                  <table class="table is-striped" style="margin-top: 1.5em;">
+                  <table class="table is-striped" style="width: 100%;">
                     <thead>
                       <tr>
                         <th scope="col">Pos.</th>
                         <th scope="col">Spiel</th>
                         <th scope="col">Datum</th>
-                        <th scope="col">Spieler</th>
-                        <th scope="col">Gewinner</th>
-                        <th scope="col">Verlierer</th>
+                        <th scope="col">Spieler / Ergebnis</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -131,20 +168,18 @@
                         <td class="has-text-right">{{ index + 1 }}</td>
                         <td class="has-text-right">{{ tableRow.boardgame.name }}</td>
                         <td class="text-ellipsis">{{ tableRow.date }}</td>
-                        <td class="has-text-centered">
-                          <p v-for="participant of tableRow.participants">
-                            {{ participant.name }}
-                          </p>
-                        </td>
-                        <td class="has-text-centered">
-                          <p v-for="participant of tableRow.participants">
-                            <i class="fas fa-trophy" :class="{'invisible': !participant.hasWon}"></i>
-                          </p>
-                        </td>
-                        <td class="has-text-centered">
-                          <p v-for="participant of tableRow.participants">
-                            <i class="fas fa-skull" :class="{'invisible': !participant.hasLost}"></i>
-                          </p>
+                        <td class="has-text-left">
+                          <div class="participant-row" v-for="participant of tableRow.participants">
+                            <span class="participant-name">{{ participant.name }}</span>
+                            <span class="participant-icons">
+                              <i class="fas fa-trophy"
+                                 :class="{ 'invisible': !participant.hasWon }"
+                                 title="Gewonnen"></i>
+                              <i class="fas fa-frown"
+                                 :class="{ 'invisible': !participant.hasLost }"
+                                 title="Verloren"></i>
+                            </span>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -153,27 +188,19 @@
               </div>
 
               <div class="tile is-child is-vertical">
-                <article class="tile is-child notification">
-                  <button class="button is-primary" @click="newSessionPanelOpen = true">Neues Spiel anlegen</button>
+                <article class="message is-primary" v-if="selectedBoardgameDescription">
+                  <div class="message-header">
+                    <p>Hinweise zur Punktevergabe</p>
+                  </div>
+                  <div class="message-body" style="white-space: pre-wrap;">
+                    {{ selectedBoardgameDescription }}
+                  </div>
                 </article>
 
                 <article class="tile is-child notification">
                   <h1 class="title px-auto">Filter</h1>
                   <table>
                     <tbody>
-                      <tr>
-                        <td>
-                          <label for="boardgameFilterSelect" style="margin-right: 10px">Spiel: </label>
-                        </td>
-                        <td>
-                          <div class="select">
-                            <select id="boardgameFilterSelect" v-model="filterBoardgameId" @change="loadGameSessions()">
-                              <option value="">Alle</option>
-                              <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
-                            </select>
-                          </div>
-                        </td>
-                      </tr>
                       <tr>
                         <td>
                           <label for="dateFromFilter" style="margin-right: 10px">Seit: </label>
@@ -183,19 +210,41 @@
                                  v-model="filterDateFrom" @change="loadGameSessions()">
                         </td>
                       </tr>
+                      <tr>
+                        <td>
+                          <label for="dateUntilFilter" style="margin-right: 10px">Bis: </label>
+                        </td>
+                        <td>
+                          <input id="dateUntilFilter" type="date" class="input"
+                                 v-model="filterDateUntil" @change="loadGameSessions()">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" id="filter-date-default-buttons">
+                          <button class="button" @click="setFilterTo('today')">Heute</button>
+                          <button class="button" @click="setFilterTo('thisWeek')">Diese Woche</button>
+                          <button class="button" @click="setFilterTo('thisMonth')">Dieser Monat</button>
+                          <button class="button" @click="setFilterTo('last30Days')">Letzte 30 Tage</button>
+                          <button class="button" @click="setFilterTo('none')">Alle</button>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </article>
 
                 <article class="tile is-child notification">
-                  <h1 class="title px-auto">Spieler Scores</h1>
+                  <h1 class="title px-auto">
+                    Spieler Scores
+                    <i class="fas fa-info-circle" style="font-size: 1.25rem"
+                       title="Wird auf Basis der Spiele in der linken Tabelle berechnet"></i>
+                  </h1>
                   <div class="is-full">
                     <table class="table is-striped">
                       <thead>
                         <tr>
                           <th>Spieler</th>
                           <th>
-                            Wins/Loses
+                            Wins/Losses
                           </th>
                           <th>
                             Win-Loss-Score
@@ -270,6 +319,23 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Beschreibung</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-fullwidth">
+                      <div class="control">
+                        <textarea
+                          class="textarea"
+                          id="newBoardgameDescription"
+                          v-model="newBoardgameDescription"
+                          placeholder="Erkläre, wie Punkte eingetragen werden sollen"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </section>
               <footer class="modal-card-foot">
                 <button class="button is-primary" @click="addBoardgame();">Speichern</button>
@@ -281,7 +347,7 @@
             <div class="modal-background"></div>
             <div class="modal-card">
               <header class="modal-card-head">
-                <p class="modal-card-title">Neues Spiel anlegen</p>
+                <p class="modal-card-title">Neue Session eintragen</p>
                 <button class="delete" aria-label="close" @click="newSessionPanelOpen = false"></button>
               </header>
               <section class="modal-card-body">
@@ -293,6 +359,16 @@
                     </select>
                   </div>
                 </div>
+
+                <article class="message is-primary" v-if="selectedNewSessionBoardgameDescription">
+                  <div class="message-header">
+                    <p>Hinweise zur Punktevergabe</p>
+                  </div>
+                  <div class="message-body" style="white-space: pre-wrap;">
+                    {{ selectedNewSessionBoardgameDescription }}
+                  </div>
+                </article>
+
                 <table style="width: 100%">
                   <tr v-for="(participant, index) of newSessionParticipants"
                       :key="index"
@@ -333,6 +409,7 @@
                 </table>
               </section>
               <footer class="modal-card-foot">
+                <button class="button" @click="resetNewSessionForm()">Formular zurücksetzen</button>
                 <button class="button is-primary"
                         @click="addGameSession()"
                         :disabled="newSessionParticipants.length < 3">

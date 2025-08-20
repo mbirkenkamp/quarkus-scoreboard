@@ -20,12 +20,14 @@ const boardgame = Vue.createApp({
 
             newBoardgamePanelOpen: false,
             newBoardgameName: "",
+            newBoardgameDescription: "",
 
             newUserPanelOpen: false,
             newUsername: "",
 
             tableEntries: [],
             filterDateFrom: '',
+            filterDateUntil: '',
             filterBoardgameId: '',
 
             newSessionPanelOpen: false,
@@ -41,7 +43,7 @@ const boardgame = Vue.createApp({
         this.loadBoardGames();
         this.loadUsers();
 
-        this.resetFilter();
+        this.setFilterTo('last30Days');
         this.loadGameSessions();
 
         this.expandNewSessionParticipants();
@@ -80,6 +82,15 @@ const boardgame = Vue.createApp({
                 }
             }
             return Object.values(scores).sort((a, b) => b.score - a.score);
+        },
+        selectedBoardgame() {
+            return this.boardgames.find(b => String(b.id) === String(this.newSessionBoardgameId));
+        },
+        selectedBoardgameDescription() {
+            return this.boardgames.find(b => b.id === this.filterBoardgameId)?.description || "";
+        },
+        selectedNewSessionBoardgameDescription() {
+            return this.selectedBoardgame?.description || "";
         }
     },
     methods: {
@@ -99,7 +110,7 @@ const boardgame = Vue.createApp({
         },
         loadGameSessions: function () {
             fetch('/scoreboard/boardgames/sessions'
-                + `?boardgameId=${this.filterBoardgameId}&date-from=${this.filterDateFrom}`)
+                + `?boardgameId=${this.filterBoardgameId}&date-from=${this.filterDateFrom}&date-until=${this.filterDateUntil}`)
                 .then(response => response.json())
                 .then(games => {
                     this.tableEntries = games;
@@ -107,37 +118,29 @@ const boardgame = Vue.createApp({
         },
         addUser: addUser,
         addBoardgame: function () {
-            if (this.newBoardgameName === "") {
-                notie.alert({
-                    type: 'error',
-                    text: 'Boardgamename ist leer!'
-                });
+            if (this.newBoardgameName.trim() === "") {
+                notie.alert({ type: 'error', text: 'Boardgamename ist leer!' });
                 return;
             }
 
-            const options = {
-                method: 'POST'
+            const params = new URLSearchParams();
+            params.set('name', this.newBoardgameName.trim());
+            if (this.newBoardgameDescription && this.newBoardgameDescription.trim() !== "") {
+                params.set('description', this.newBoardgameDescription.trim());
             }
 
-            fetch('/scoreboard/boardgame?name=' + encodeURI(this.newBoardgameName), options)
+            fetch('/scoreboard/boardgame?' + params.toString(), { method: 'POST' })
                 .then(response => {
                     if (response.status === 200) {
                         this.loadBoardGames();
                         this.newBoardgamePanelOpen = false;
-                        notie.alert({
-                            type: 'success',
-                            text: 'Boardgame angelegt!'
-                        });
+                        this.newBoardgameName = "";
+                        this.newBoardgameDescription = "";
+                        notie.alert({ type: 'success', text: 'Boardgame angelegt!' });
                     } else if (response.status === 409) {
-                        notie.alert({
-                            type: 'error',
-                            text: 'Boardgame existiert schon!'
-                        });
+                        notie.alert({ type: 'error', text: 'Boardgame existiert schon!' });
                     } else {
-                        notie.alert({
-                            type: 'error',
-                            text: 'Boardgame konnte nicht angelegt werden!'
-                        });
+                        notie.alert({ type: 'error', text: 'Boardgame konnte nicht angelegt werden!' });
                     }
                 })
         },
@@ -180,15 +183,19 @@ const boardgame = Vue.createApp({
 
             fetch('/scoreboard/boardgame/' + encodeURIComponent(this.newSessionBoardgameId) + '/session', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dto)
             })
                 .then(response => {
                     if (response.ok) {
                         notie.alert({ type: 'success', text: 'Session gespeichert!' });
-                        this.newSessionParticipants = [];
+                        this.newSessionParticipants.forEach(p => {
+                            if (p.name !== '') {
+                                p.hasWon = false;
+                                p.hasLost = false;
+                            }
+                        });
+                        this.expandNewSessionParticipants();
                         this.loadGameSessions();
                     } else {
                         return response.text().then(text => {
@@ -214,12 +221,41 @@ const boardgame = Vue.createApp({
 
             return this.users.filter(u => !selectedNames.includes(u.name));
         },
-        resetFilter: function() {
-            this.filterBoardgameId = '';
-
+        resetNewSessionForm: function() {
+            this.newSessionBoardgameId = "";
+            this.newSessionParticipants = [];
+            this.expandNewSessionParticipants();
+        },
+        setFilterTo: function(filter) {
             const today = new Date();
-            const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-            this.filterDateFrom = oneMonthAgo.toISOString().substring(0, 10);
+            switch (filter) {
+                case 'none':
+                    this.filterDateFrom = '';
+                    this.filterDateUntil = '';
+                    break;
+                case 'today':
+                    this.filterDateFrom = today.toISOString().substring(0, 10);
+                    this.filterDateUntil = today.toISOString().substring(0, 10);
+                    break;
+                case 'thisWeek':
+                    const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 2);
+                    const endOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 8);
+                    this.filterDateFrom = startOfWeek.toISOString().substring(0, 10);
+                    this.filterDateUntil = endOfWeek.toISOString().substring(0, 10);
+                    break;
+                case 'thisMonth':
+                    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    this.filterDateFrom = startOfMonth.toISOString().substring(0, 10);
+                    this.filterDateUntil = endOfMonth.toISOString().substring(0, 10);
+                    break;
+                case 'last30Days':
+                    const startOfLast30Days = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30);
+                    this.filterDateFrom = startOfLast30Days.toISOString().substring(0, 10);
+                    this.filterDateUntil = today.toISOString().substring(0, 10);
+                    break;
+            }
+            this.loadGameSessions();
         }
     }
 });

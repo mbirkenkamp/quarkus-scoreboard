@@ -251,21 +251,25 @@ public class ScoreboardRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/boardgame")
     public Response createBoardgame(
-            @QueryParam("name") String name
+            @QueryParam("name") String name,
+            @QueryParam("description") @DefaultValue("") String description
     ) {
         if (StringUtils.isBlank(name)) {
-            return Response.status(Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing 'name'").build();
         }
         List<Boardgame> boardgames = entityPersister.readBoardgames();
         if (boardgames.stream().anyMatch(bg ->  bg.getName().equals(name))) {
             return Response.status(Status.BAD_REQUEST).build();
         }
         Boardgame newGame = new Boardgame(name);
+        if (StringUtils.isNotBlank(description)) {
+            newGame.setDescription(description);
+        }
         boardgames.add(newGame);
         if (entityPersister.writeBoardgames(boardgames)) {
             return Response.ok(newGame).build();
         } else {
-            return Response.serverError().build();
+            return Response.serverError().entity("Error creating boardgame").build();
         }
     }
 
@@ -281,7 +285,8 @@ public class ScoreboardRest {
     @Path("/boardgames/sessions")
     public Response getBoardgameSessions(
             @QueryParam("boardgameId") String boardgameId,
-            @QueryParam("date-from") String dateFrom
+            @QueryParam("date-from") String dateFrom,
+            @QueryParam("date-until") String dateUntil
     ) {
         Map<UUID, Boardgame> boardgames = entityPersister.readBoardgames().stream()
                 .collect(Collectors.toMap(Boardgame::getId, b -> b));
@@ -309,12 +314,24 @@ public class ScoreboardRest {
             }
         }
 
+        LocalDate dateUntilFilter = null;
+        if (StringUtils.isNotBlank(dateUntil)) {
+            try {
+                dateUntilFilter = LocalDate.parse(dateUntil);
+            } catch (DateTimeParseException e) {
+                return Response.status(Status.BAD_REQUEST).entity("Bad Request: Invalid Date Format").build();
+            }
+        }
+
         List<BoardgameTableEntry> results = new LinkedList<>();
         for (BoardgameSession session : sessions) {
             if (boardgameIdFilter != null && !session.getBoardgameId().equals(boardgameIdFilter)) {
                 continue;
             }
             if (dateFromFilter != null && session.getDate().isBefore(dateFromFilter)) {
+                continue;
+            }
+            if (dateUntilFilter != null && session.getDate().isAfter(dateUntilFilter)) {
                 continue;
             }
 
