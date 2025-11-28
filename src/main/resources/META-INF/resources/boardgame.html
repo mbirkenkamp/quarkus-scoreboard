@@ -75,8 +75,15 @@
         .invisible {
             visibility: hidden;
         }
-        #filter-date-default-buttons > button:not(:first-child) {
-            margin-left: 0.5rem;
+
+        #filter-date-default-buttons tr td button {
+            width: 100%;
+        }
+        #filter-date-default-buttons tr td {
+            padding-top: 0.25em;
+        }
+        #filter-date-default-buttons tr td:not(:first-child) {
+            padding-left: 0.15em;
         }
 
         .participant-row {
@@ -148,7 +155,7 @@
                     <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
                   </select>
                 </div>
-                <button class="button title is-4" @click="newSessionPanelOpen = true">Neue Session eintragen</button>
+                <button class="button title is-4" @click="openNewSessionPanel">Neue Session eintragen</button>
               </span>
             </div>
             <div class="tile is-parent">
@@ -199,13 +206,13 @@
 
                 <article class="tile is-child notification">
                   <h1 class="title px-auto">Filter</h1>
-                  <table>
+                  <table id="filter-date-default-buttons">
                     <tbody>
                       <tr>
                         <td>
                           <label for="dateFromFilter" style="margin-right: 10px">Seit: </label>
                         </td>
-                        <td>
+                        <td colspan="2">
                           <input id="dateFromFilter" type="date" class="input"
                                  v-model="filterDateFrom" @change="loadGameSessions()">
                         </td>
@@ -214,18 +221,39 @@
                         <td>
                           <label for="dateUntilFilter" style="margin-right: 10px">Bis: </label>
                         </td>
-                        <td>
+                        <td colspan="2">
                           <input id="dateUntilFilter" type="date" class="input"
                                  v-model="filterDateUntil" @change="loadGameSessions()">
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="2" id="filter-date-default-buttons">
+                        <td>
                           <button class="button" @click="setFilterTo('today')">Heute</button>
-                          <button class="button" @click="setFilterTo('thisWeek')">Diese Woche</button>
-                          <button class="button" @click="setFilterTo('thisMonth')">Dieser Monat</button>
-                          <button class="button" @click="setFilterTo('last30Days')">Letzte 30 Tage</button>
+                        </td>
+                        <td>
                           <button class="button" @click="setFilterTo('none')">Alle</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <button class="button" @click="setFilterTo('thisWeek')">Diese Woche</button>
+                        </td>
+                        <td>
+                          <button class="button" @click="setFilterTo('thisMonth')">Dieser Monat</button>
+                        </td>
+                        <td>
+                          <button class="button" @click="setFilterTo('last30Days')">Letzte 30 Tage</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <button class="button" @click="setFilterTo('lastWeek')">Letzte Woche</button>
+                        </td>
+                        <td>
+                          <button class="button" @click="setFilterTo('lastMonth')">Letzter Monat</button>
+                        </td>
+                        <td>
+                          <button class="button" @click="setFilterTo('last60Days')">Letzte 60 Tage</button>
                         </td>
                       </tr>
                     </tbody>
@@ -244,11 +272,11 @@
                         <tr>
                           <th>Spieler</th>
                           <th>
-                            Wins/Losses
+                            Wins/Losses (Total)
                           </th>
                           <th>
-                            Win-Loss-Score
-                            <i class="fas fa-info-circle" title="+1 je Win, -1 je Loss"></i>
+                            Winrate
+                            <i class="fas fa-info-circle" title="= Winrate - Lossrate (Hover für Werte)"></i>
                           </th>
                         </tr>
                       </thead>
@@ -258,10 +286,12 @@
                             {{ score.name }}
                           </td>
                           <td>
-                            {{ score.wins }}/{{ score.losses }}
+                            {{ score.wins }}/{{ score.losses }} ({{ score.total }})
                           </td>
                           <td>
-                            {{ score.score }}
+                            <span :title="`Winrate = ${isNaN(score.winRate) ? 0 : score.winRate}% / Lossrate = ${isNaN(score.lossRate) ? 0 : score.lossRate}%`">
+                              {{ score.percentileScore }}%
+                            </span>
                           </td>
                         </tr>
                       </tbody>
@@ -407,6 +437,11 @@
                     </td>
                   </tr>
                 </table>
+
+                <article>
+                  <label for="newSessionDate" style="margin-right: 10px">Datum: </label>
+                  <input id="newSessionDate" type="date" class="input" v-model="newSessionDate">
+                </article>
               </section>
               <footer class="modal-card-foot">
                 <button class="button" @click="resetNewSessionForm()">Formular zurücksetzen</button>
