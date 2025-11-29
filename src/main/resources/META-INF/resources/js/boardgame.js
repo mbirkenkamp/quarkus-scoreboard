@@ -34,10 +34,6 @@ const boardgame = Vue.createApp({
             newSessionBoardgameId: "",
             newSessionParticipants: [],
             newSessionDate: '',
-
-            ui: {
-                colorScheme: "fa-moon"
-            }
         }
     },
     created: function () {
@@ -48,15 +44,6 @@ const boardgame = Vue.createApp({
         this.loadGameSessions();
 
         this.expandNewSessionParticipants();
-
-        let savedMode = localStorage.getItem('darkmode');
-        if (savedMode === 'on') {
-            document.querySelector("#darkmode").disabled = "";
-            this.ui.colorScheme = "fa-sun";
-        } else {
-            document.querySelector("#darkmode").disabled = "disabled";
-            this.ui.colorScheme = "fa-moon";
-        }
     },
     computed: {
         getParticipantScores() {
@@ -158,17 +145,6 @@ const boardgame = Vue.createApp({
                         notie.alert({ type: 'error', text: 'Boardgame konnte nicht angelegt werden!' });
                     }
                 })
-        },
-        toggleColor: function () {
-            if (this.ui.colorScheme === "fa-moon") {
-                document.querySelector("#darkmode").disabled = "";
-                this.ui.colorScheme = "fa-sun";
-                localStorage.setItem('darkmode', 'on');
-            } else {
-                document.querySelector("#darkmode").disabled = "disabled";
-                this.ui.colorScheme = "fa-moon";
-                localStorage.setItem('darkmode', 'off');
-            }
         },
         openNewSessionPanel: function () {
             this.newSessionPanelOpen = true;

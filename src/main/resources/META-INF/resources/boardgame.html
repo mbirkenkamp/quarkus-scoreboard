@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>scorebox</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" />
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/dark.css" id="darkmode" disabled="disabled">
     <script src="https://unpkg.com/notie"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
@@ -76,7 +75,7 @@
             visibility: hidden;
         }
 
-        #filter-date-default-buttons tr td button {
+        #filter-date-default-buttons {
             width: 100%;
         }
         #filter-date-default-buttons tr td {
@@ -84,6 +83,9 @@
         }
         #filter-date-default-buttons tr td:not(:first-child) {
             padding-left: 0.15em;
+        }
+        #filter-date-default-buttons tr td button {
+            width: 100%;
         }
 
         .participant-row {
@@ -114,7 +116,7 @@
   </head>
   <body>
     <div id="app">
-      <i id="colorswitch" class="fas" :class="ui.colorScheme" @click="toggleColor()"></i>
+      <i id="colorswitch" class="fas fa-sun" onclick="toggleColor()"></i>
       <div v-cloak>
         <nav class="navbar is-fixed-bottom is-dark">
           <div class="navbar-menu">
@@ -158,9 +160,9 @@
                 <button class="button title is-4" @click="openNewSessionPanel">Neue Session eintragen</button>
               </span>
             </div>
-            <div class="tile is-parent">
-              <div class="tile is-child">
-                <article class="tile is-child notification">
+            <div class="grid">
+              <div class="cell">
+                <article class="box notification">
                   <table class="table is-striped" style="width: 100%;">
                     <thead>
                       <tr>
@@ -194,7 +196,7 @@
                 </article>
               </div>
 
-              <div class="tile is-child is-vertical">
+              <div class="box is-vertical">
                 <article class="message is-primary" v-if="selectedBoardgameDescription">
                   <div class="message-header">
                     <p>Hinweise zur Punktevergabe</p>
@@ -204,7 +206,7 @@
                   </div>
                 </article>
 
-                <article class="tile is-child notification">
+                <article class="box notification">
                   <h1 class="title px-auto">Filter</h1>
                   <table id="filter-date-default-buttons">
                     <tbody>
@@ -260,14 +262,14 @@
                   </table>
                 </article>
 
-                <article class="tile is-child notification">
+                <article class="cell notification">
                   <h1 class="title px-auto">
                     Spieler Scores
                     <i class="fas fa-info-circle" style="font-size: 1.25rem"
                        title="Wird auf Basis der Spiele in der linken Tabelle berechnet"></i>
                   </h1>
                   <div class="is-full">
-                    <table class="table is-striped">
+                    <table class="table is-striped" style="width: 100%;">
                       <thead>
                         <tr>
                           <th>Spieler</th>
