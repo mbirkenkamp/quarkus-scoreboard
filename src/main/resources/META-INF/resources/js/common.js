@@ -42,13 +42,39 @@ const loadUsers = function () {
         });
 }
 
-const initDarkMode = function () {
-    let savedMode = localStorage.getItem('darkmode');
-    if (savedMode === 'on') {
-        document.querySelector("#darkmode").disabled = "";
-        this.ui.colorScheme = "fa-sun";
+
+
+function setDarkMode(enabled) {
+    document.documentElement.setAttribute('data-theme', enabled ? 'dark' : 'light');
+    localStorage.setItem('darkmode', enabled ? 'on' : 'off');
+    if (enabled) {
+        document.getElementById('colorswitch').classList.add('fa-sun');
+        document.getElementById('colorswitch').classList.remove('fa-moon');
     } else {
-        document.querySelector("#darkmode").disabled = "disabled";
-        this.ui.colorScheme = "fa-moon";
+        document.getElementById('colorswitch').classList.add('fa-moon');
+        document.getElementById('colorswitch').classList.remove('fa-sun');
     }
 }
+
+function initTheme() {
+    const saved = localStorage.getItem('darkmode');
+
+    let dark;
+    if (saved === 'on') {
+        dark = true;
+    } else if (saved === 'off') {
+        dark = false;
+    } else {
+        dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    setDarkMode(dark);
+}
+
+function toggleColor() {
+    const currentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    setDarkMode(!currentlyDark);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+});

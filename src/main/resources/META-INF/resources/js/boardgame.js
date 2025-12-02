@@ -33,10 +33,7 @@ const boardgame = Vue.createApp({
             newSessionPanelOpen: false,
             newSessionBoardgameId: "",
             newSessionParticipants: [],
-
-            ui: {
-                colorScheme: "fa-moon"
-            }
+            newSessionDate: '',
         }
     },
     created: function () {
@@ -47,15 +44,6 @@ const boardgame = Vue.createApp({
         this.loadGameSessions();
 
         this.expandNewSessionParticipants();
-
-        let savedMode = localStorage.getItem('darkmode');
-        if (savedMode === 'on') {
-            document.querySelector("#darkmode").disabled = "";
-            this.ui.colorScheme = "fa-sun";
-        } else {
-            document.querySelector("#darkmode").disabled = "disabled";
-            this.ui.colorScheme = "fa-moon";
-        }
     },
     computed: {
         getParticipantScores() {
@@ -68,9 +56,14 @@ const boardgame = Vue.createApp({
                             name: name,
                             wins: 0,
                             losses: 0,
-                            score: 0
+                            score: 0,
+                            total: 0,
+                            winRate: 0,
+                            lossRate: 0,
+                            percentileScore: 0
                         };
                     }
+                    scores[name].total += 1;
                     if (participant.hasWon) {
                         scores[name].wins += 1;
                         scores[name].score += 1;
@@ -81,7 +74,16 @@ const boardgame = Vue.createApp({
                     }
                 }
             }
-            return Object.values(scores).sort((a, b) => b.score - a.score);
+            for (const name in scores) {
+                const score = scores[name];
+                score.winRate = Math.round(score.wins / (score.wins + score.losses) * 100);
+                score.lossRate = Math.round(score.losses / (score.wins + score.losses) * 100);
+                score.percentileScore = Math.round((score.winRate - score.lossRate));
+                if (isNaN(score.percentileScore)) {
+                    score.percentileScore = 0;
+                }
+            }
+            return Object.values(scores).sort((a, b) => b.percentileScore - a.percentileScore);
         },
         selectedBoardgame() {
             return this.boardgames.find(b => String(b.id) === String(this.newSessionBoardgameId));
@@ -144,15 +146,11 @@ const boardgame = Vue.createApp({
                     }
                 })
         },
-        toggleColor: function () {
-            if (this.ui.colorScheme === "fa-moon") {
-                document.querySelector("#darkmode").disabled = "";
-                this.ui.colorScheme = "fa-sun";
-                localStorage.setItem('darkmode', 'on');
-            } else {
-                document.querySelector("#darkmode").disabled = "disabled";
-                this.ui.colorScheme = "fa-moon";
-                localStorage.setItem('darkmode', 'off');
+        openNewSessionPanel: function () {
+            this.newSessionPanelOpen = true;
+            this.newSessionDate = new Date().toISOString().substring(0, 10);
+            if (this.filterBoardgameId) {
+                this.newSessionBoardgameId = this.filterBoardgameId;
             }
         },
         addGameSession: function () {
@@ -172,8 +170,13 @@ const boardgame = Vue.createApp({
                 return;
             }
 
+            let gameDate = this.newSessionDate;
+            if (!gameDate) {
+                gameDate = new Date().toISOString().substring(0, 10);
+            }
+
             const dto = {
-                date: new Date().toISOString().substring(0, 10),
+                date: gameDate,
                 participants: this.newSessionParticipants.filter(p => p.name !== '').map(p => ({
                     name: p.name,
                     hasWon: p.hasWon,
@@ -225,6 +228,7 @@ const boardgame = Vue.createApp({
             this.newSessionBoardgameId = "";
             this.newSessionParticipants = [];
             this.expandNewSessionParticipants();
+            this.newSessionDate = new Date().toISOString().substring(0, 10);
         },
         setFilterTo: function(filter) {
             const today = new Date();
@@ -254,6 +258,23 @@ const boardgame = Vue.createApp({
                     this.filterDateFrom = startOfLast30Days.toISOString().substring(0, 10);
                     this.filterDateUntil = today.toISOString().substring(0, 10);
                     break;
+                case 'lastWeek':
+                    const startOfLastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() - 5);
+                    const endOfLastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 1);
+                    this.filterDateFrom = startOfLastWeek.toISOString().substring(0, 10);
+                    this.filterDateUntil = endOfLastWeek.toISOString().substring(0, 10);
+                    break;
+                case 'lastMonth':
+                    const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                    this.filterDateFrom = startOfLastMonth.toISOString().substring(0, 10);
+                    this.filterDateUntil = endOfLastMonth.toISOString().substring(0, 10);
+                    break;
+                case 'last60Days':
+                    const startOfLast60Days = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 60);
+                    this.filterDateFrom = startOfLast60Days.toISOString().substring(0, 10);
+                    this.filterDateUntil = today.toISOString().substring(0, 10);
+                    break;
             }
             this.loadGameSessions();
         }
@@ -261,3 +282,17 @@ const boardgame = Vue.createApp({
 });
 
 boardgame.mount("#app");
+
+// This is a little workaround, so the native DatePicker is more easily accessible
+// as they normally only open up on explicit user interaction
+// See https://developer.mozilla.org/de/docs/Web/API/HTMLInputElement/showPicker
+if ("showPicker" in HTMLInputElement.prototype) {
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+        input.addEventListener('focus', () => {
+            input.showPicker();
+        });
+        input.addEventListener('click', () => {
+            input.showPicker();
+        });
+    });
+}

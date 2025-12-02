@@ -45,25 +45,12 @@ const foosball = Vue.createApp({
             newSeasonStart: null,
             newSeasonEnd: null,
 
-            openGamePanel: false,
-
-            ui: {
-                colorScheme: "fa-moon"
-            }
+            openGamePanel: false
         }
     },
     created: function () {
         this.loadSeasons();
         this.loadUsers();
-
-        let savedMode = localStorage.getItem('darkmode');
-        if (savedMode === 'on') {
-            document.querySelector("#darkmode").disabled = "";
-            this.ui.colorScheme = "fa-sun";
-        } else {
-            document.querySelector("#darkmode").disabled = "disabled";
-            this.ui.colorScheme = "fa-moon";
-        }
     },
     computed: {
         isCurrentSeason: function () {
@@ -339,19 +326,7 @@ const foosball = Vue.createApp({
                     })
                 }
                 , 700);
-        },
-        toggleColor: function () {
-            if (this.ui.colorScheme === "fa-moon") {
-                document.querySelector("#darkmode").disabled = "";
-                this.ui.colorScheme = "fa-sun";
-                localStorage.setItem('darkmode', 'on');
-            } else {
-                document.querySelector("#darkmode").disabled = "disabled";
-                this.ui.colorScheme = "fa-moon";
-                localStorage.setItem('darkmode', 'off');
-            }
         }
-
     }
 });
 foosball.component('game-highlight', {
