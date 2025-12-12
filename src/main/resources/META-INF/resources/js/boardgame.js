@@ -76,8 +76,8 @@ const boardgame = Vue.createApp({
             }
             for (const name in scores) {
                 const score = scores[name];
-                score.winRate = Math.round(score.wins / (score.wins + score.losses) * 100);
-                score.lossRate = Math.round(score.losses / (score.wins + score.losses) * 100);
+                score.winRate = Math.round(score.wins / score.total * 100);
+                score.lossRate = Math.round(score.losses / score.total * 100);
                 score.percentileScore = Math.round((score.winRate - score.lossRate));
                 if (isNaN(score.percentileScore)) {
                     score.percentileScore = 0;
