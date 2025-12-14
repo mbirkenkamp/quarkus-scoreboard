@@ -70,7 +70,7 @@
                       <i class="fas" :class="currentSeason.icon" v-if="currSeason != null"></i>
                       <i class="fas fa-trophy fa-fw"></i>
                   </span>
-                  <div class="select is-large">
+                  <div class="select is-large is-primary">
                     <select id="seasonList" @change="changeSeason();" v-model="currentSeasonName" >
                       <option v-for="season of seasons" >{{ season.name }}</option>
                     </select>
@@ -112,72 +112,87 @@
               <div class="cell is-vertical" >
                 <article class="box notification" v-if="isCurrentSeason">
                   <h1 class="title px-auto">Neues Spiel</h1>
-                  <div class="columns is-centered">
-                    <div class="column is-half">
-                      <div class="select is-pulled-right">
-                        <select id="team1User1" data-source="users" v-model="team1User1">
-                          <option v-for="user of users" >{{ user.name }}</option>
-                        </select>
-                      </div>
-                      <br v-if="currentSeason.teamSize==2" />
-                      <div class="select is-pulled-right" v-if="currentSeason.teamSize==2">
-                        <select id="team1User1" data-source="users" v-model="team1User2" >
-                          <option v-for="user of users" >{{ user.name }}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="column is-half">
-                      <div class="select">
-                        <select id="team2User1" data-source="users" v-model="team2User1">
-                          <option v-for="user of users" >{{ user.name }}</option>
-                        </select>
-                      </div>
-                      <br v-if="currentSeason.teamSize==2" />
-                      <div class="select" v-if="currentSeason.teamSize==2">
-                        <select id="team2User1" data-source="users" v-model="team2User2">
-                          <option v-for="user of users" >{{ user.name }}</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="control columns is-centered">
-                    <div class="column is-one-quarter"></div>
-                    <div class="select">
-                      <select id="team1Score" v-model="team1Score">
-                        <option value="10">10</option>
-                        <option value="9">9</option>
-                        <option value="8">8</option>
-                        <option value="7">7</option>
-                        <option value="6">6</option>
-                        <option value="5">5</option>
-                        <option value="4">4</option>
-                        <option value="3">3</option>
-                        <option value="2">2</option>
-                        <option value="1">1</option>
-                        <option value="0">0</option>
-                      </select>
-                    </div>
-                    &nbsp;&nbsp;:&nbsp;&nbsp;
-                    <div class="select">
-                      <select id="team2Score" v-model="team2Score">
-                        <option value="10">10</option>
-                        <option value="9">9</option>
-                        <option value="8">8</option>
-                        <option value="7">7</option>
-                        <option value="6">6</option>
-                        <option value="5">5</option>
-                        <option value="4">4</option>
-                        <option value="3">3</option>
-                        <option value="2">2</option>
-                        <option value="1">1</option>
-                        <option value="0">0</option>
-                      </select>
-                    </div>
-                    <button @click="openGamePanel = true"><i class="fas fa-arrows-alt"></i></button>
-                    <div class="column is-one-quarter py-0"><button class="button is-primary is-pulled-right mr-3" @click="addMatch()"><i class="fas fa-save"></i></button></div>
-                  </div>
+                  <table id="newGameTable" class="table">
+                    <tr>
+                      <td colspan="2">
+                        <div class="select">
+                          <select id="team1User1" data-source="users" v-model="team1User1">
+                            <option v-for="user of users" >{{ user.name }}</option>
+                          </select>
+                        </div>
+                      </td>
+                      <td colspan="2">
+                        <div class="select">
+                          <select id="team2User1" data-source="users" v-model="team2User1">
+                            <option v-for="user of users" >{{ user.name }}</option>
+                          </select>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="currentSeason.teamSize==2">
+                      <td colspan="2">
+                        <div class="select">
+                          <select id="team1User1" data-source="users" v-model="team1User2" >
+                            <option v-for="user of users" >{{ user.name }}</option>
+                          </select>
+                        </div>
+                      </td>
+                      <td colspan="2">
+                        <div class="select">
+                          <select id="team2User1" data-source="users" v-model="team2User2">
+                            <option v-for="user of users" >{{ user.name }}</option>
+                          </select>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button @click="openGamePanel = true" class="button" title="Open Highlight Score Tracker">
+                          <i class="fas fa-arrows-alt"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <div class="select is-pulled-right">
+                          <select id="team1Score" v-model="team1Score">
+                            <option value="10">10</option>
+                            <option value="9">9</option>
+                            <option value="8">8</option>
+                            <option value="7">7</option>
+                            <option value="6">6</option>
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                            <option value="0">0</option>
+                          </select>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="select">
+                          <select id="team2Score" v-model="team2Score">
+                            <option value="10">10</option>
+                            <option value="9">9</option>
+                            <option value="8">8</option>
+                            <option value="7">7</option>
+                            <option value="6">6</option>
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                            <option value="0">0</option>
+                          </select>
+                        </div>
+                      </td>
+                      <td>
+                        <button class="button is-primary is-pulled-right" @click="addMatch()">
+                          <i class="fas fa-save"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
                 </article>
-
 
                 <article class="box notification">
                   <h1 class="title px-auto">Spiele</h1>

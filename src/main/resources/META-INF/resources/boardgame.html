@@ -119,13 +119,15 @@
                 Boardgame Tracking
               </span>
               <span class="title is-4">
-                <div class="select" style="margin-right: 1rem;">
-                  <select id="boardgameFilterSelect" v-model="filterBoardgameId" @change="loadGameSessions()">
+                <div class="select is-primary" style="margin-right: 1rem;">
+                  <select id="boardgameFilterSelect"
+                          v-model="filterBoardgameId"
+                          @change="loadGameSessions()">
                     <option value="">Alle Spiele</option>
                     <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
                   </select>
                 </div>
-                <button class="button title is-4" @click="openNewSessionPanel">Neue Session eintragen</button>
+                <button class="button is-primary title is-4" @click="openNewSessionPanel">Neue Session eintragen</button>
               </span>
             </div>
             <div class="grid">
@@ -398,7 +400,7 @@
                                :disabled="participant.name === ''">
                       </label>
                     </td>
-                    <td style="vertical-align: middle; max-width: 25px;">
+                    <td style="vertical-align: middle;">
                       <button class="button"
                               @click="newSessionParticipants.splice(index, 1)"
                               :disabled="participant.name === ''">
@@ -417,6 +419,7 @@
                 <button class="button" @click="resetNewSessionForm()">Formular zurücksetzen</button>
                 <button class="button is-primary"
                         @click="addGameSession()"
+                        style="margin-left: 10px;"
                         :disabled="newSessionParticipants.length < 3">
                   Spielsitzung speichern
                 </button>
