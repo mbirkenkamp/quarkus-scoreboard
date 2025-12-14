@@ -31,8 +31,8 @@ const foosball = Vue.createApp({
             team1User2: "",
             team2User1: "",
             team2User2: "",
-            team1Score: 9,
-            team2Score: 9,
+            team1Score: 0,
+            team2Score: 0,
 
             newUserPanelOpen: false,
             newUsername: "",
@@ -347,9 +347,12 @@ foosball.component('game-highlight', {
             </div>    
         </div>
         <div class="level-item has-text-centered is-size-1">            
-            <button class="button is-primary is-size-1" @click="addTeam1Goal">+</button>&nbsp;{{team1score}}:{{team2score}}&nbsp;<button class="button is-primary is-size-1" @click="addTeam2Goal">+</button>
+            <button class="button is-size-1 mr-1" @click="addTeam1Goal(-1)">-</button>
+            <button class="button is-primary is-size-1" @click="addTeam1Goal">+</button>
+            &nbsp;{{team1score}}:{{team2score}}&nbsp;
+            <button class="button is-primary is-size-1" @click="addTeam2Goal">+</button>
+            <button class="button is-size-1 ml-1" @click="addTeam2Goal(-1)">-</button>
         </div>
-        <!-- Right side -->
         <div class="level-right">
             <div class="level-item is-size-1">
                 {{team2user1}}<br />
@@ -368,15 +371,23 @@ foosball.component('game-highlight', {
         }
     },    
     methods: {
-        addTeam1Goal: function() {
-            this.team1score += 1;
-            if(this.team1score === 10) {
+        addTeam1Goal: function(cc) {
+            this.team1score += isNaN(cc) ? 1 : cc;
+            if (this.team1score < 0) {
+                this.team1score = 0;
+            }
+            if(this.team1score >= 10) {
+                this.team1score = 10;
                 this.celebrateChampion();
             }
         },
-        addTeam2Goal: function() {
-            this.team2score += 1;
-            if(this.team2score === 10) {
+        addTeam2Goal: function(cc) {
+            this.team2score += isNaN(cc) ? 1 : cc;
+            if (this.team2score < 0) {
+                this.team2score = 0;
+            }
+            if(this.team2score >= 10) {
+                this.team2score = 10;
                 this.celebrateChampion();
             }
         },
