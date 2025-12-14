@@ -34,6 +34,8 @@ const boardgame = Vue.createApp({
             newSessionBoardgameId: "",
             newSessionParticipants: [],
             newSessionDate: '',
+
+            sortScoresBy: 'percentile',
         }
     },
     created: function () {
@@ -82,6 +84,21 @@ const boardgame = Vue.createApp({
                 if (isNaN(score.percentileScore)) {
                     score.percentileScore = 0;
                 }
+            }
+
+            if (this.sortScoresBy === 'absolute') {
+                return Object.values(scores).sort((a, b) => (b.wins - b.losses) - (a.wins - a.losses));
+            }
+            if (this.sortScoresBy === 'percentile3min') {
+                return Object.values(scores).sort((a, b) => {
+                    if (a.total < 3 && b.total >= 3) {
+                        return 1;
+                    }
+                    if (b.total < 3 && a.total >= 3) {
+                        return -1;
+                    }
+                    return b.percentileScore - a.percentileScore;
+                });
             }
             return Object.values(scores).sort((a, b) => b.percentileScore - a.percentileScore);
         },

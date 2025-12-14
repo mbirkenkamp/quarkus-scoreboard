@@ -237,6 +237,14 @@
                     Spieler Scores
                     <i class="fas fa-info-circle" style="font-size: 1.25rem"
                        title="Wird auf Basis der Spiele in der linken Tabelle berechnet"></i>
+
+                    <div class="select title is-5 is-pulled-right">
+                      <select id="scoreboardSortSelect" v-model="sortScoresBy">
+                        <option value="absolute">Absolut</option>
+                        <option value="percentile">Prozentual</option>
+                        <option value="percentile3min">Prozentual (3+ Games)</option>
+                      </select>
+                    </div>
                   </h1>
                   <div class="is-full">
                     <table class="table is-striped" style="width: 100%;">
