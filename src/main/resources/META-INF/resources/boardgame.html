@@ -28,40 +28,8 @@
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
+    <link rel="stylesheet" href="/css/main.css">
     <style>
-        .notie-fullscreen {
-            display:table-cell;
-            height: 90vh;
-            vertical-align: middle;
-            text-align: center;
-        }
-        .notie-container {
-            z-index: 41;
-        }
-        .notification {
-            background-color: unset;
-        }
-        .fontawesome-select .fa{
-            font-family: "Font Awesome 5 Free", Open Sans;
-            font-weight: 700;
-            font-size: 24px;
-        }
-        [v-cloak] {
-            display: none;
-        }
-        .text-ellipsis {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-        .w-80 {
-            width: 80%;
-        }
-        #colorswitch {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-        }
         .checkbox-large {
             transform: scale(1.5);
             margin: 0.5em;
@@ -112,23 +80,6 @@
         .participant-icons .fa-trophy {
             color: #d4af37;
         }
-
-        .navbar {
-            background-image: linear-gradient(135deg, #004000 0%, #7fff7f 40%, #004000 100%);
-        }
-        .navbar-item {
-            background: transparent;
-        }
-        .navbar-item:hover {
-            background: transparent;
-        }
-        .navbar-item > button {
-            background: rgba(0,0,0,0.5);
-            color: lightgray;
-        }
-        .navbar-item > button:hover {
-            background: rgba(0,0,0,0.65);
-        }
     </style>
   </head>
   <body>
@@ -168,13 +119,15 @@
                 Boardgame Tracking
               </span>
               <span class="title is-4">
-                <div class="select" style="margin-right: 1rem;">
-                  <select id="boardgameFilterSelect" v-model="filterBoardgameId" @change="loadGameSessions()">
+                <div class="select is-primary" style="margin-right: 1rem;">
+                  <select id="boardgameFilterSelect"
+                          v-model="filterBoardgameId"
+                          @change="loadGameSessions()">
                     <option value="">Alle Spiele</option>
                     <option v-for="boardgame of boardgames" :value="boardgame.id">{{ boardgame.name }}</option>
                   </select>
                 </div>
-                <button class="button title is-4" @click="openNewSessionPanel">Neue Session eintragen</button>
+                <button class="button is-primary title is-4" @click="openNewSessionPanel">Neue Session eintragen</button>
               </span>
             </div>
             <div class="grid">
@@ -284,6 +237,14 @@
                     Spieler Scores
                     <i class="fas fa-info-circle" style="font-size: 1.25rem"
                        title="Wird auf Basis der Spiele in der linken Tabelle berechnet"></i>
+
+                    <div class="select title is-5 is-pulled-right">
+                      <select id="scoreboardSortSelect" v-model="sortScoresBy">
+                        <option value="absolute">Absolut</option>
+                        <option value="percentile">Prozentual</option>
+                        <option value="percentile3min">Prozentual (3+ Games)</option>
+                      </select>
+                    </div>
                   </h1>
                   <div class="is-full">
                     <table class="table is-striped" style="width: 100%;">
@@ -447,7 +408,7 @@
                                :disabled="participant.name === ''">
                       </label>
                     </td>
-                    <td style="vertical-align: middle; max-width: 25px;">
+                    <td style="vertical-align: middle;">
                       <button class="button"
                               @click="newSessionParticipants.splice(index, 1)"
                               :disabled="participant.name === ''">
@@ -466,6 +427,7 @@
                 <button class="button" @click="resetNewSessionForm()">Formular zurücksetzen</button>
                 <button class="button is-primary"
                         @click="addGameSession()"
+                        style="margin-left: 10px;"
                         :disabled="newSessionParticipants.length < 3">
                   Spielsitzung speichern
                 </button>
